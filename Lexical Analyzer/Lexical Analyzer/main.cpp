@@ -1,12 +1,10 @@
-
-
-
-#include <string>
 #include <iostream> // cout. communicatio with the humans
 #include <vector> // used to store each token and its info
 #include <fstream> // used for writing and reading files
+#include <string>
 
-#include "FSM.h"
+
+//#include "FSM.h"
 
 using namespace std;
 
@@ -30,43 +28,144 @@ isdigit ()
 
 
 */
+const int FOUND = 1;
+const int NOT_FOUND = 0;
+
+int comma(char alphaNum) //assumes that a single character is passed in, if say, ",Schemes" is passed in, this won't work
+{
+	if (alphaNum == ',')
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int period(string alphaNum)
+{
+	if (alphaNum == ".")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int q_mark( string alphaNum)
+{
+	if (alphaNum == "?")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int left_paren( string alphaNum)
+{
+	if (alphaNum == "(")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int right_paren( string alphaNum)
+{
+	if (alphaNum == ")")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int colon( string alphaNum)
+{
+	if (alphaNum == ":")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int colon_dash( string alphaNum)
+{
+	return NULL;
+}
+
+int multiply( string alphaNum)
+{
+	if (alphaNum == "*")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+int add( string alphaNum)
+{
+	if (alphaNum == "+")
+		return FOUND;
+	else
+		return NOT_FOUND;
+}
+
+//Keyword
+int schemes( string alphaNum) //must be case sensitive. Would we call it recursively to look at the next letter?
+{
+	return NULL;
+}
+
+//Keyword
+int rules( string alphaNum)
+{
+	return NULL;
+}
+
+//Keyword
+int queries( string alphaNum)
+{
+	return NULL;
+}
+
+//ID
+int id( string alphaNum)
+{
+	return NULL;
+}
+
+int stringFSM( string alphaNum)
+{
+	return NULL;
+}
+
+int comment( string alphaNum)
+{
+	return NULL;
+}
 
 const bool TESTING = true;
 
-int main()
+int main(int argc, char* argv[])
 {
-	std::string fileLocation;
-
-	//Gets File Location from user
-	cout << "Enter file (include directory tree):" << endl;
-	getline(cin, fileLocation);
-
-	//creats ifstream (used to open files)
 	ifstream inputFile;
-	//opens the File
-	inputFile.open(fileLocation.c_str());
-	//checks to see if file is open, if it is not, reasks for file location
-	while (!inputFile.is_open())
-	{
-		cout << "File did not open. Enter File Location: ";
-		getline(cin, fileLocation);
-		inputFile.open(fileLocation.c_str());
-	}
-
-	
+	inputFile.open(argv[1]);
 
 	//next we begin to parse in input. 
 	//use get line to look at whole line at a time, then we'll look at each character, passing it to the FSM Functions
 	//after each getline, iterate or line counter, which will be used in each stored token
 
-	std::string line;
+	 string line;
 	int lineNumber = 0;
 
 	while (getline(inputFile, line))
 	{
 		lineNumber++;
+
+		// if there's a blank line, what will get line do?
+
 		//now line holds the entire string, now we pass it to each of the FSM, one character at a time. 
 		//we iterate line
+		//once we go thru all the functions we look at who "captured the most"?
+
+		for (unsigned i = 0; i < line.size(); i++)
+		{
+			comma(line[i]);
+			//all other FSMs
+
+			//peek function
+
+		}
 
 		/*
 		SCANNER ALGORITHM
@@ -89,5 +188,5 @@ int main()
 
 		
 
-		return 0;
+return 0;
 }
