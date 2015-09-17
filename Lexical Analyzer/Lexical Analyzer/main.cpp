@@ -3,8 +3,7 @@
 #include <fstream> // used for writing and reading files
 #include <string>
 
-
-//#include "FSM.h"
+#include "SchemesFSM.h"
 
 using namespace std;
 
@@ -28,116 +27,116 @@ isdigit ()
 
 
 */
-const int FOUND = 1;
-const int NOT_FOUND = 0;
 
-int comma(char alphaNum) //assumes that a single character is passed in, if say, ",Schemes" is passed in, this won't work
-{
-	if (alphaNum == ',')
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
 
-int period(string alphaNum)
-{
-	if (alphaNum == ".")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-int q_mark( string alphaNum)
-{
-	if (alphaNum == "?")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-int left_paren( string alphaNum)
-{
-	if (alphaNum == "(")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-int right_paren( string alphaNum)
-{
-	if (alphaNum == ")")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-int colon( string alphaNum)
-{
-	if (alphaNum == ":")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-int colon_dash( string alphaNum)
-{
-	return NULL;
-}
-
-int multiply( string alphaNum)
-{
-	if (alphaNum == "*")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-int add( string alphaNum)
-{
-	if (alphaNum == "+")
-		return FOUND;
-	else
-		return NOT_FOUND;
-}
-
-//Keyword
-int schemes( string alphaNum) //must be case sensitive. Would we call it recursively to look at the next letter?
-{
-	return NULL;
-}
-
-//Keyword
-int rules( string alphaNum)
-{
-	return NULL;
-}
-
-//Keyword
-int queries( string alphaNum)
-{
-	return NULL;
-}
-
-//ID
-int id( string alphaNum)
-{
-	return NULL;
-}
-
-int stringFSM( string alphaNum)
-{
-	return NULL;
-}
-
-int comment( string alphaNum)
-{
-	return NULL;
-}
-
-const bool TESTING = true;
+//int comma(char alphaNum) //assumes that a single character is passed in, if say, ",Schemes" is passed in, this won't work
+//{
+//	if (alphaNum == ',')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int period(char alphaNum)
+//{
+//	if (alphaNum == '.')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int q_mark(char alphaNum)
+//{
+//	if (alphaNum == '?')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int left_paren(char alphaNum)
+//{
+//	if (alphaNum == '(')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int right_paren(char alphaNum)
+//{
+//	if (alphaNum == ')')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int colon(char alphaNum)
+//{
+//	if (alphaNum == ':')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int colon_dash(char alphaNum, string currentLine)
+//{
+//	if (alphaNum == ':')
+//		
+//}
+//
+//int multiply(char alphaNum)
+//{
+//	if (alphaNum == '*')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+//int add(char alphaNum)
+//{
+//	if (alphaNum == '+')
+//		return FOUND;
+//	else
+//		return NOT_FOUND;
+//}
+//
+////Keyword
+//int schemes( string alphaNum) //must be case sensitive. Would we call it recursively to look at the next letter?
+//{
+//	return NOT_FOUND;
+//}
+//
+////Keyword
+//int rules( string alphaNum)
+//{
+//	return NOT_FOUND;
+//}
+//
+////Keyword
+//int queries( string alphaNum)
+//{
+//	return NOT_FOUND;
+//}
+//
+////ID
+//int id( string alphaNum)
+//{
+//	return NOT_FOUND;
+//}
+//
+//int stringFSM( string alphaNum)
+//{
+//	return NOT_FOUND;
+//}
+//
+//int comment( string alphaNum)
+//{
+//	return NOT_FOUND;
+//}
 
 int main(int argc, char* argv[])
 {
+	SchemesFSM keywordSchemes;
+
 	ifstream inputFile;
 	inputFile.open(argv[1]);
 
@@ -145,7 +144,7 @@ int main(int argc, char* argv[])
 	//use get line to look at whole line at a time, then we'll look at each character, passing it to the FSM Functions
 	//after each getline, iterate or line counter, which will be used in each stored token
 
-	 string line;
+	string line;
 	int lineNumber = 0;
 
 	while (getline(inputFile, line))
@@ -158,13 +157,9 @@ int main(int argc, char* argv[])
 		//we iterate line
 		//once we go thru all the functions we look at who "captured the most"?
 
-		for (unsigned i = 0; i < line.size(); i++)
+		for (auto X : line)
 		{
-			comma(line[i]);
-			//all other FSMs
-
-			//peek function
-
+			keywordSchemes.transition(X);
 		}
 
 		/*
