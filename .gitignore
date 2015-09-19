@@ -8,3 +8,6 @@ Lexical Analyzer/Lexical Analyzer/Debug/SchemesFSM.obj
 Lexical Analyzer/Lexical Analyzer.sdf
 *.exe
 Lexical Analyzer/.vs/Lexical Analyzer/v14/.suo
+*.vcxproj
+Lexical Analyzer/Lexical Analyzer/Lexical Analyzer.vcxproj.filters
+*.opensdf
