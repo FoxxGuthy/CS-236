@@ -3,8 +3,6 @@
 #include <fstream> // used for writing and reading files
 #include <string>
 
-#include "SchemesFSM.h"
-
 using namespace std;
 
 /* FSM Functions for each token in the language
@@ -29,127 +27,81 @@ isdigit ()
 */
 
 
-//int comma(char alphaNum) //assumes that a single character is passed in, if say, ",Schemes" is passed in, this won't work
-//{
-//	if (alphaNum == ',')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int period(char alphaNum)
-//{
-//	if (alphaNum == '.')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int q_mark(char alphaNum)
-//{
-//	if (alphaNum == '?')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int left_paren(char alphaNum)
-//{
-//	if (alphaNum == '(')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int right_paren(char alphaNum)
-//{
-//	if (alphaNum == ')')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int colon(char alphaNum)
-//{
-//	if (alphaNum == ':')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int colon_dash(char alphaNum, string currentLine)
-//{
-//	if (alphaNum == ':')
-//		
-//}
-//
-//int multiply(char alphaNum)
-//{
-//	if (alphaNum == '*')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-//int add(char alphaNum)
-//{
-//	if (alphaNum == '+')
-//		return FOUND;
-//	else
-//		return NOT_FOUND;
-//}
-//
-////Keyword
-//int schemes( string alphaNum) //must be case sensitive. Would we call it recursively to look at the next letter?
-//{
-//	return NOT_FOUND;
-//}
-//
-////Keyword
-//int rules( string alphaNum)
-//{
-//	return NOT_FOUND;
-//}
-//
-////Keyword
-//int queries( string alphaNum)
-//{
-//	return NOT_FOUND;
-//}
-//
-////ID
-//int id( string alphaNum)
-//{
-//	return NOT_FOUND;
-//}
-//
-//int stringFSM( string alphaNum)
-//{
-//	return NOT_FOUND;
-//}
-//
-//int comment( string alphaNum)
-//{
-//	return NOT_FOUND;
-//}
+int const FOUND = 1;
+int const NOT_FOUND = 0;
+string const BLANK = "";
+
+//----------------------------------------------------------------------------------------------------------------------
+//                      FSM FUNCTIONS
+
+//COMMA CAPTURE
+string Comma(char* position)
+{
+	if (*position == ',')
+	{
+		position++; //move position to the next char
+		string s(1, *position); //cast the char as a string, so we can call string functions and keep this consistent
+		return s; //for more complicated FSM ths will be the whole string, then we'll check the length. 
+	}
+	else
+		return BLANK;
+}
+
+//NEWLINE CAPTURE
+//@param: position in string, and the currentLine count, passed in by reference
+// if char is new line: position++, newLineCount++
+void NewLineDectect(char* position, int& newLineCount) 
+{
+	if (*position == '\n')
+	{
+		position++;
+		newLineCount++;
+	}
+}
+
+/*
+CAPTURE UNDEFINED 
+since this will be at the end, it really only needs to check what is as a precaution
+checks if its an alphanumber just in case
+if it is not, moves position along
+casts the char back to an string and returns it
+else returns empty string
+*/
+string Undefined(char* position)
+{
+	if (!isalnum(*position)) //its not a number or alpha, so just move along
+	{
+		position++;
+		string s(1, *position);
+		return s;
+	}
+	else
+		return BLANK;
+}
 
 int main(int argc, char* argv[])
 {
-	SchemesFSM keywordSchemes;
-
 	ifstream inputFile;
 	inputFile.open(argv[1]);
 
-	//next we begin to parse in input. 
-	//use get line to look at whole line at a time, then we'll look at each character, passing it to the FSM Functions
-	//after each getline, iterate or line counter, which will be used in each stored token
+	char* position; //this variable will point to where we are in the input string
 
+	if (!inputFile.is_open()) //check that the file actually opened
+		cout << "not open" << endl;
+
+	string inputString;
 	string line;
+	while (getline (inputFile, line)) //while we're not at the end of the file, take in input
+	{
+		inputString += line; //add the file line by line into the inputString
+	}
+	inputFile.close(); //close the File. we don't need it anymore
+
+	position = &inputString[0]; // pointer to first part of string
+
 	int lineNumber = 0;
 
-	while (getline(inputFile, line))
-	{
-		lineNumber++;
+	
 
 		// if there's a blank line, what will get line do?
 
@@ -157,10 +109,7 @@ int main(int argc, char* argv[])
 		//we iterate line
 		//once we go thru all the functions we look at who "captured the most"?
 
-		for (auto X : line)
-		{
-			keywordSchemes.transition(X);
-		}
+		
 
 		/*
 		SCANNER ALGORITHM
@@ -177,11 +126,5 @@ int main(int argc, char* argv[])
 			end
 		end
 		*/
-
-
-	}
-
-		
-
-return 0;
+	return 0;
 }

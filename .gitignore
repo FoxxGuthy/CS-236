@@ -1,0 +1,10 @@
+*.pdb
+Lexical Analyzer/Lexical Analyzer/Debug/Lexical Analyzer.tlog/CL.read.1.tlog
+*.tlog
+Lexical Analyzer/Lexical Analyzer/exampleTest.txt
+*.idb
+Lexical Analyzer/Lexical Analyzer/Debug/SchemesFSM.obj
+*.sln
+Lexical Analyzer/Lexical Analyzer.sdf
+*.exe
+Lexical Analyzer/.vs/Lexical Analyzer/v14/.suo
