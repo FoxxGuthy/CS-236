@@ -300,7 +300,14 @@ string Comment(char* position)
 		return BLANK;
 }
 
-
+void whiteSpace(char* &position)
+{
+	while (*position == ' ')
+	{
+		position++;
+	}
+	//could also use isspace
+}
 
 
 //NEWLINE CAPTURE
@@ -613,7 +620,7 @@ int main(int argc, char* argv[])
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
-				if (*position != '\n') //we want the newline to survive so we can up the number
+				//if (*position != '\n') //we want the newline to survive so we can up the number
 					position++; //move position forward as many are in the string
 			}
 		}
@@ -644,7 +651,7 @@ int main(int argc, char* argv[])
 			tokenString += "\", " + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 		}
-
+		whiteSpace(position); //skips over whitespace
 		NewLineDetect(position, lineNumber);
 
 		if (*position == '\0') //THE EMPTY CHAR!!! EOF
@@ -652,13 +659,18 @@ int main(int argc, char* argv[])
 	}
 
 	tokenList.push_back("(EOF, \"\", " + to_string(lineNumber) + ")");
-	tokenList.shrink_to_fit();
 
+	//***********************************************************************************************************
+	//OUTPUT TO FILE:
+
+	ofstream output;
+	output.open("OutputFile.txt");
 	for (auto S : tokenList)
 	{
-		cout << S << endl; //eventually write to a .txt file
+		output << S << endl;
+		//cout << S << endl; //eventually write to a .txt file
 	}
-
-	cout << "Total Tokens = " << tokenList.size();
+	output << "Total Tokens = " << tokenList.size();
+	//cout << "Total Tokens = " << tokenList.size();
 	return 0;
 }
