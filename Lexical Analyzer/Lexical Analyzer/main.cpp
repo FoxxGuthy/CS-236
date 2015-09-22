@@ -208,27 +208,28 @@ string StringFSM(char* position)
 		char* finder = position;
 		finder++; //for our analysis we don't want finder pointing at the quote, we need it at the first whatever
 		string tokenString = "'";
-		while (*finder != '\'' && (finder != '\0')) //need to prevent ptr from going out of bounds... may probalby still go out of bounds...
+		while (*finder != '\'' && (*finder != '\0')) //need to prevent ptr from going out of bounds... may probalby still go out of bounds...
 		{
 			tokenString += *finder; //append next value
 			//if the next two chars are a single quote, move forward 2 and don't end the string
 			char* next0 = finder;
 			next0++; //now points to char after finder
 
-			if (next0 == '\0') //EOF before end of string
+			if (*next0 == '\0') //EOF before end of string
 				return BLANK;
 
 			char* next1 = next0;
 			next1++; //now points to char after next0
 
-			if (next1 == '\0') //EOF before end of string
+			if (*next1 == '\0') //EOF before end of string
 				return BLANK;
 
 			if ((*next0 == '\'') && (*next1 == '\''))
 			{
 				tokenString += "''";
-				finder++;
-				finder++;
+				finder++; //move to the first single quote
+				finder++; // mov to second single quote
+				finder++; //now pointing at the letter after the "apostrophe"
 			}
 			else
 				finder++;
@@ -238,8 +239,11 @@ string StringFSM(char* position)
 			tokenString += "'"; //this should be the closing quote to the string
 			return tokenString;
 		}
-		else if (finder == '\0') //reached end of file before we found another single quote
+		else if (*finder == '\0') //reached end of file before we found another single quote
+		{
+			//if we could just pass a string to undefined that'd be cool
 			return BLANK;
+		}
 	}
 	else
 		return BLANK;
@@ -259,13 +263,13 @@ string Comment(char* position)
 			char* next0 = finder;
 			next0++; //now points to char after finder
 
-			if (next0 == '\0') //EOF before end of string
+			if (*next0 == '\0') //EOF before end of string
 				return BLANK;
 
 			char* next1 = next0;
 			next1++; //now points to char after next0
 
-			if (next1 == '\0') //EOF before end of string
+			if (*next1 == '\0') //EOF before end of string
 				return BLANK;
 
 
@@ -275,12 +279,12 @@ string Comment(char* position)
 				finder++;
 				next0++;
 
-				if (next0 == '\0') //EOF before end of string
+				if (*next0 == '\0') //EOF before end of string
 					return BLANK;
 
 				next1++;
 
-				if (next1 == '\0') //EOF before end of string
+				if (*next1 == '\0') //EOF before end of string
 					return BLANK;
 			}
 			commentString += "|#";
@@ -323,18 +327,36 @@ void NewLineDetect(char*& position, int& newLineCount)
 }
 
 /*
-CAPTURE UNDEFINED-----------------BROKE AF
-since this will be at the end, it really only needs to check what is as a precaution
-checks if its an alphanumber just in case
-if it is not, moves position along
-casts the char back to an string and returns it
-else returns empty string
+CAPTURE UNDEFINED
 */
 string Undefined(char* position) //MAY NOT WORK WITH BROKEN STRINGS/COMMENTS EXAMPLE: 'A STRING
 {
 	//check is it #| with no end?
 	//is it 'string with end?
-	if (!isalnum(*position)) //its not a number or alpha, so just move along
+	
+	if (StringFSM(position) == "" && *position == '\'') //its starts with a ' but its not a string, so its an undefined string!
+	{
+		string s;
+		while (*position != '\0')
+		{
+			s += *position;
+			position++;
+		}
+		return s;
+	}
+
+	else if (Comment(position) == "" && *position == '#') //a multiline comment that hits EOF
+	{
+		string C;
+		while (*position != '\0')
+		{
+			C += *position;
+			position++;
+		}
+		return C;
+	}
+	
+	else if (!isalnum(*position)) //its not a number or alpha, so just move along
 	{
 		string s(1, *position); //make string first, or we lose that period when we move the position
 		return s;
@@ -342,6 +364,7 @@ string Undefined(char* position) //MAY NOT WORK WITH BROKEN STRINGS/COMMENTS EXA
 	else
 		return BLANK;
 }
+
 
 void FindLongestLength(string accepted, int& longestLength)
 {
@@ -483,7 +506,7 @@ int main(int argc, char* argv[])
 		//SCHEMES
 		if (longestLength == SchemesFind.length())
 		{
-			tokenString = "(SCHEMES, \"" + SchemesFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(SCHEMES,\"" + SchemesFind + "\", " + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
@@ -495,7 +518,7 @@ int main(int argc, char* argv[])
 		//FACTS
 		else if (longestLength == FactsFind.length())
 		{
-			tokenString = "(FACTS, \"" + FactsFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(FACTS,\"" + FactsFind + "\", " + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
@@ -507,7 +530,7 @@ int main(int argc, char* argv[])
 		//RULES
 		else if (longestLength == RulesFind.length())
 		{
-			tokenString = "(RULES, \"" + RulesFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(RULES,\"" + RulesFind + "\", " + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
@@ -519,7 +542,7 @@ int main(int argc, char* argv[])
 		//QUERIES
 		else if (longestLength == QueriesFind.length())
 		{
-			tokenString = "(QUERIES, \"" + QueriesFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(QUERIES,\"" + QueriesFind + "\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
@@ -531,7 +554,7 @@ int main(int argc, char* argv[])
 		//ID
 		else if (longestLength == IDFind.length())
 		{
-			tokenString = "(ID, \"" + IDFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(ID,\"" + IDFind + "\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
@@ -543,7 +566,7 @@ int main(int argc, char* argv[])
 		//COMMA
 		else if (longestLength == CommaFind.length())  //when not all machines are active and we get a zero, it'll just cycle thru here...0 == 0; TRUE!
 		{
-			tokenString = "(COMMA, \",\", " + to_string(lineNumber) + ")";
+			tokenString = "(COMMA,\",\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -551,7 +574,7 @@ int main(int argc, char* argv[])
 		//PERIOD
 		else if (longestLength == PeriodFind.length())
 		{
-			tokenString = "(PERIOD, \".\", " + to_string(lineNumber) + ")";
+			tokenString = "(PERIOD,\".\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -559,7 +582,7 @@ int main(int argc, char* argv[])
 		//Q_MARK
 		else if (longestLength == Q_markFind.length())
 		{
-			tokenString = "(Q_MARK, \"?\", " + to_string(lineNumber) + ")";
+			tokenString = "(Q_MARK,\"?\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -567,7 +590,7 @@ int main(int argc, char* argv[])
 		//LEFT_PARAN
 		else if (longestLength == Left_parenFind.length())
 		{
-			tokenString = "(LEFT_PAREN, \"(\", " + to_string(lineNumber) + ")";
+			tokenString = "(LEFT_PAREN,\"(\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -575,7 +598,7 @@ int main(int argc, char* argv[])
 		//RIGHT_PARAN
 		else if (longestLength == Right_parenFind.length())
 		{
-			tokenString = "(RIGHT_PAREN, \")\", " + to_string(lineNumber) + ")";
+			tokenString = "(RIGHT_PAREN,\")\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -583,7 +606,7 @@ int main(int argc, char* argv[])
 		//COLON
 		else if (longestLength == ColonFind.length())
 		{
-			tokenString = "(COLON, \":\", " + to_string(lineNumber) + ")";
+			tokenString = "(COLON,\":\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -591,7 +614,7 @@ int main(int argc, char* argv[])
 		//COLON_DASH
 		else if (longestLength == ColonDashFind.length())
 		{
-			tokenString = "(COLON_DASH, \":-\", " + to_string(lineNumber) + ")";
+			tokenString = "(COLON_DASH,\":-\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 			position++;
@@ -600,7 +623,7 @@ int main(int argc, char* argv[])
 		//MULTIPLY
 		else if (longestLength == MultiFind.length())
 		{
-			tokenString = "(MULTIPLY, \"*\", " + to_string(lineNumber) + ")";
+			tokenString = "(MULTIPLY,\"*\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -608,7 +631,7 @@ int main(int argc, char* argv[])
 		//ADD
 		else if (longestLength == AddFind.length())
 		{
-			tokenString = "(ADD, \"+\", " + to_string(lineNumber) + ")";
+			tokenString = "(ADD,\"+\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			position++;
 		}
@@ -616,10 +639,13 @@ int main(int argc, char* argv[])
 		//STRING
 		else if (longestLength == StringFSMFind.length())
 		{
-			tokenString = "(STRING, \"" + StringFSMFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(STRING,\"" + StringFSMFind + "\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
+				if (*position == '\n')
+					lineNumber++;
+
 				//if (*position != '\n') //we want the newline to survive so we can up the number
 					position++; //move position forward as many are in the string
 			}
@@ -628,10 +654,13 @@ int main(int argc, char* argv[])
 		//COMMENT
 		else if (longestLength == CommentFind.length())
 		{
-			tokenString = "(COMMENT, \"" + CommentFind + "\", " + to_string(lineNumber) + ")";
+			tokenString = "(COMMENT,\"" + CommentFind + "\"," + to_string(lineNumber) + ")";
 			tokenList.push_back(tokenString);
 			for (int i = 0; i < longestLength; i++)
 			{
+				if (*position == '\n')
+					lineNumber++;
+
 				position++; //move position forward as many are in the string
 			}
 		}
@@ -639,18 +668,20 @@ int main(int argc, char* argv[])
 		//UNDEFINED
 		else if (longestLength == UndefinedFind.length())
 		{
-			string tokenString = "(UNDEFINED, \"";
-			
-			//The problem is that *position isn't a string, its a char, therefore we can't use string operations on it
-			//we need to make a substring from where position is pointing for the length of the stuff
+			string linecount = to_string(lineNumber);
+			string tokenString = "(UNDEFINED,\"";
 			for (unsigned j = 0; j < UndefinedFind.length(); j++) // BROKE AF
 			{
+				if (*position == '\n')
+					lineNumber++;
+
 				tokenString += *position;
 				position++;
 			}
-			tokenString += "\", " + to_string(lineNumber) + ")";
+			tokenString += "\"," + linecount + ")"; //that way it counts the first line number
 			tokenList.push_back(tokenString);
 		}
+
 		whiteSpace(position); //skips over whitespace
 		NewLineDetect(position, lineNumber);
 
@@ -658,7 +689,7 @@ int main(int argc, char* argv[])
 			break;
 	}
 
-	tokenList.push_back("(EOF, \"\", " + to_string(lineNumber) + ")");
+	tokenList.push_back("(EOF,\"\"," + to_string(lineNumber) + ")");
 
 	//***********************************************************************************************************
 	//OUTPUT TO FILE:
