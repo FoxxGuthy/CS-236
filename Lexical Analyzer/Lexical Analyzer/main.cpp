@@ -327,9 +327,6 @@ string Undefined(char* position) //MAY NOT WORK WITH BROKEN STRINGS/COMMENTS EXA
 {
 	//check is it #| with no end?
 	//is it 'string with end?
-	
-    cout << *position << endl;
-
 
 	if (StringFSM(position) == "" && *position == '\'') //its starts with a ' but its not a string, so its an undefined string!
 	{
@@ -356,10 +353,6 @@ string Undefined(char* position) //MAY NOT WORK WITH BROKEN STRINGS/COMMENTS EXA
 	else if (!isalnum(*position)) //its not a number or alpha, so just move along
 	{
 		string s(1, *position); //make string first, or we lose that period when we move the position
-                if (*position == '\n')
-                    cout << "\n" << endl;
-                if(*position== '\r')
-                    cout << "\r" << endl;
 		return s;
 	}
 	else
@@ -778,6 +771,6 @@ int main(int argc, char* argv[])
 		cout << S << endl;
 	}
 
-	cout << "Total Tokens = " << tokenList.size();
+	cout << "Total Tokens = " << tokenList.size() << endl;
 	return 0;
 }
