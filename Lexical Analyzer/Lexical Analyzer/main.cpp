@@ -215,8 +215,6 @@ string StringFSM(char* position)
 			char* next0 = finder;
 			next0++; //now points to char after finder
 
-			if (*next0 == '\0') //EOF before end of string
-				return BLANK;
 
 			char* next1 = next0;
 			next1++; //now points to char after next0
@@ -262,9 +260,6 @@ string Comment(char* position)
 			//commentString += "|";
 			char* next0 = finder;
 			next0++; //now points to char after finder
-
-			if (*next0 == '\0') //EOF before end of string
-				return BLANK;
 
 			char* next1 = next0;
 			next1++; //now points to char after next0
@@ -372,249 +367,251 @@ void FindLongestLength(string accepted, int& longestLength)
 		longestLength = accepted.length();
 }
 
-string SimpleFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position) //to cut down complexity, this will call the simple FSMs
-{
-	string CommaFind = Comma(position); //so we don't have to keep calling the comma function, save time
-	FindLongestLength(CommaFind, longestLength);
-
-	string PeriodFind = Period(position);
-	FindLongestLength(PeriodFind, longestLength);
-
-	string Q_markFind = Q_mark(position);
-	FindLongestLength(Q_markFind, longestLength);
-
-	string Left_parenFind = Left_paren(position);
-	FindLongestLength(Left_parenFind, longestLength);
-
-	string Right_parenFind = right_paren(position);
-	FindLongestLength(Right_parenFind, longestLength);
-
-	string  ColonFind = Colon(position);
-	FindLongestLength(ColonFind, longestLength);
-
-	string ColonDashFind = ColonDash(position);
-	FindLongestLength(ColonDashFind, longestLength);
-
-	string MultiFind = Multiply(position);
-	FindLongestLength(MultiFind, longestLength);
-
-	string AddFind = Add(position);
-	FindLongestLength(AddFind, longestLength);
 
 
-		//COMMA
-		if (longestLength == CommaFind.length())  //when not all machines are active and we get a zero, it'll just cycle thru here...0 == 0; TRUE!
-		{
-			tokenString = "(COMMA,\",\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		//PERIOD
-		else if (longestLength == PeriodFind.length())
-		{
-			tokenString = "(PERIOD,\".\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		//Q_MARK
-		else if (longestLength == Q_markFind.length())
-		{
-			tokenString = "(Q_MARK,\"?\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		//LEFT_PARAN
-		else if (longestLength == Left_parenFind.length())
-		{
-			tokenString = "(LEFT_PAREN,\"(\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		//RIGHT_PARAN
-		else if (longestLength == Right_parenFind.length())
-		{
-			tokenString = "(RIGHT_PAREN,\")\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		//COLON
-		else if (longestLength == ColonFind.length())
-		{
-			tokenString = "(COLON,\":\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		
-
-		//MULTIPLY
-		else if (longestLength == MultiFind.length())
-		{
-			tokenString = "(MULTIPLY,\"*\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		//ADD
-		else if (longestLength == AddFind.length())
-		{
-			tokenString = "(ADD,\"+\"," + to_string(lineNumber) + ")";
-			tokenList.push_back(tokenString);
-			position++;
-		}
-
-		return tokenString;
-}
-
-string ComplexFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
-{
-	string ColonDashFind = ColonDash(position);
-	FindLongestLength(ColonDashFind, longestLength);
-
-	//schemes
-	string SchemesFind = Schemes(position);
-	FindLongestLength(SchemesFind, longestLength);
-
-	//facts
-	string FactsFind = Facts(position);
-	FindLongestLength(FactsFind, longestLength);
-
-	//rules
-	string RulesFind = Rules(position);
-	FindLongestLength(RulesFind, longestLength);
-
-	//queries
-	string QueriesFind = Queries(position);
-	FindLongestLength(QueriesFind, longestLength);
-
-	//ID
-	string IDFind = ID(position);
-	FindLongestLength(IDFind, longestLength);
-
-	string StringFSMFind = StringFSM(position);
-	FindLongestLength(StringFSMFind, longestLength);
-
-	string CommentFind = Comment(position);
-	FindLongestLength(CommentFind, longestLength);
-
-	string UndefinedFind = Undefined(position);
-	FindLongestLength(UndefinedFind, longestLength);
-
-
-	//SCHEMES
-	if (longestLength == SchemesFind.length())
-	{
-		tokenString = "(SCHEMES,\"" + SchemesFind + "\", " + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position != '\n') //we want the newline to survive so we can up the number
-				position++; //move position forward as many are in the string
-		}
-	}
-
-	//FACTS
-	else if (longestLength == FactsFind.length())
-	{
-		tokenString = "(FACTS,\"" + FactsFind + "\", " + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position != '\n') //we want the newline to survive so we can up the number
-				position++; //move position forward as many are in the string
-		}
-	}
-
-	//RULES
-	else if (longestLength == RulesFind.length())
-	{
-		tokenString = "(RULES,\"" + RulesFind + "\", " + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position != '\n') //we want the newline to survive so we can up the number
-				position++; //move position forward as many are in the string
-		}
-	}
-
-	//QUERIES
-	else if (longestLength == QueriesFind.length())
-	{
-		tokenString = "(QUERIES,\"" + QueriesFind + "\"," + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position != '\n') //we want the newline to survive so we can up the number
-				position++; //move position forward as many are in the string
-		}
-	}
-
-
-	//STRING
-	else if (longestLength == StringFSMFind.length())
-	{
-		tokenString = "(STRING,\"" + StringFSMFind + "\"," + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position == '\n')
-				lineNumber++;
-
-			//if (*position != '\n') //we want the newline to survive so we can up the number
-			position++; //move position forward as many are in the string
-		}
-	}
-
-	//COMMENT
-	else if (longestLength == CommentFind.length())
-	{
-		tokenString = "(COMMENT,\"" + CommentFind + "\"," + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position == '\n')
-				lineNumber++;
-
-			position++; //move position forward as many are in the string
-		}
-	}
-
-	//ID
-	else if (longestLength == IDFind.length())
-	{
-		tokenString = "(ID,\"" + IDFind + "\"," + to_string(lineNumber) + ")";
-		tokenList.push_back(tokenString);
-		for (int i = 0; i < longestLength; i++)
-		{
-			if (*position != '\n') //we want the newline to survive so we can up the number
-				position++; //move position forward as many are in the string
-		}
-	}
-
-	//UNDEFINED
-	else if (longestLength == UndefinedFind.length())
-	{
-		string linecount = to_string(lineNumber);
-		string tokenString = "(UNDEFINED,\"";
-		for (unsigned j = 0; j < UndefinedFind.length(); j++) // BROKE AF
-		{
-			if (*position == '\n')
-				lineNumber++;
-
-			tokenString += *position;
-			position++;
-		}
-		tokenString += "\"," + linecount + ")"; //that way it counts the first line number
-		tokenList.push_back(tokenString);
-	}
-
-	return tokenString;
-}
+//string SimpleFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position) //to cut down complexity, this will call the simple FSMs
+//{
+//	string CommaFind = Comma(position); //so we don't have to keep calling the comma function, save time
+//	FindLongestLength(CommaFind, longestLength);
+//
+//	string PeriodFind = Period(position);
+//	FindLongestLength(PeriodFind, longestLength);
+//
+//	string Q_markFind = Q_mark(position);
+//	FindLongestLength(Q_markFind, longestLength);
+//
+//	string Left_parenFind = Left_paren(position);
+//	FindLongestLength(Left_parenFind, longestLength);
+//
+//	string Right_parenFind = right_paren(position);
+//	FindLongestLength(Right_parenFind, longestLength);
+//
+//	string  ColonFind = Colon(position);
+//	FindLongestLength(ColonFind, longestLength);
+//
+//	string ColonDashFind = ColonDash(position);
+//	FindLongestLength(ColonDashFind, longestLength);
+//
+//	string MultiFind = Multiply(position);
+//	FindLongestLength(MultiFind, longestLength);
+//
+//	string AddFind = Add(position);
+//	FindLongestLength(AddFind, longestLength);
+//
+//
+//		//COMMA
+//		if (longestLength == CommaFind.length())  //when not all machines are active and we get a zero, it'll just cycle thru here...0 == 0; TRUE!
+//		{
+//			tokenString = "(COMMA,\",\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		//PERIOD
+//		else if (longestLength == PeriodFind.length())
+//		{
+//			tokenString = "(PERIOD,\".\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		//Q_MARK
+//		else if (longestLength == Q_markFind.length())
+//		{
+//			tokenString = "(Q_MARK,\"?\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		//LEFT_PARAN
+//		else if (longestLength == Left_parenFind.length())
+//		{
+//			tokenString = "(LEFT_PAREN,\"(\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		//RIGHT_PARAN
+//		else if (longestLength == Right_parenFind.length())
+//		{
+//			tokenString = "(RIGHT_PAREN,\")\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		//COLON
+//		else if (longestLength == ColonFind.length())
+//		{
+//			tokenString = "(COLON,\":\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		
+//
+//		//MULTIPLY
+//		else if (longestLength == MultiFind.length())
+//		{
+//			tokenString = "(MULTIPLY,\"*\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		//ADD
+//		else if (longestLength == AddFind.length())
+//		{
+//			tokenString = "(ADD,\"+\"," + to_string(lineNumber) + ")";
+//			tokenList.push_back(tokenString);
+//			position++;
+//		}
+//
+//		return tokenString;
+//}
+//
+//string ComplexFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+//{
+//	string ColonDashFind = ColonDash(position);
+//	FindLongestLength(ColonDashFind, longestLength);
+//
+//	//schemes
+//	string SchemesFind = Schemes(position);
+//	FindLongestLength(SchemesFind, longestLength);
+//
+//	//facts
+//	string FactsFind = Facts(position);
+//	FindLongestLength(FactsFind, longestLength);
+//
+//	//rules
+//	string RulesFind = Rules(position);
+//	FindLongestLength(RulesFind, longestLength);
+//
+//	//queries
+//	string QueriesFind = Queries(position);
+//	FindLongestLength(QueriesFind, longestLength);
+//
+//	//ID
+//	string IDFind = ID(position);
+//	FindLongestLength(IDFind, longestLength);
+//
+//	string StringFSMFind = StringFSM(position);
+//	FindLongestLength(StringFSMFind, longestLength);
+//
+//	string CommentFind = Comment(position);
+//	FindLongestLength(CommentFind, longestLength);
+//
+//	string UndefinedFind = Undefined(position);
+//	FindLongestLength(UndefinedFind, longestLength);
+//
+//
+//	//SCHEMES
+//	if (longestLength == SchemesFind.length())
+//	{
+//		tokenString = "(SCHEMES,\"" + SchemesFind + "\", " + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position != '\n') //we want the newline to survive so we can up the number
+//				position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//	//FACTS
+//	else if (longestLength == FactsFind.length())
+//	{
+//		tokenString = "(FACTS,\"" + FactsFind + "\", " + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position != '\n') //we want the newline to survive so we can up the number
+//				position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//	//RULES
+//	else if (longestLength == RulesFind.length())
+//	{
+//		tokenString = "(RULES,\"" + RulesFind + "\", " + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position != '\n') //we want the newline to survive so we can up the number
+//				position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//	//QUERIES
+//	else if (longestLength == QueriesFind.length())
+//	{
+//		tokenString = "(QUERIES,\"" + QueriesFind + "\"," + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position != '\n') //we want the newline to survive so we can up the number
+//				position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//
+//	//STRING
+//	else if (longestLength == StringFSMFind.length())
+//	{
+//		tokenString = "(STRING,\"" + StringFSMFind + "\"," + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position == '\n')
+//				lineNumber++;
+//
+//			//if (*position != '\n') //we want the newline to survive so we can up the number
+//			position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//	//COMMENT
+//	else if (longestLength == CommentFind.length())
+//	{
+//		tokenString = "(COMMENT,\"" + CommentFind + "\"," + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position == '\n')
+//				lineNumber++;
+//
+//			position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//	//ID
+//	else if (longestLength == IDFind.length())
+//	{
+//		tokenString = "(ID,\"" + IDFind + "\"," + to_string(lineNumber) + ")";
+//		tokenList.push_back(tokenString);
+//		for (int i = 0; i < longestLength; i++)
+//		{
+//			if (*position != '\n') //we want the newline to survive so we can up the number
+//				position++; //move position forward as many are in the string
+//		}
+//	}
+//
+//	//UNDEFINED
+//	else if (longestLength == UndefinedFind.length())
+//	{
+//		string linecount = to_string(lineNumber);
+//		string tokenString = "(UNDEFINED,\"";
+//		for (unsigned j = 0; j < UndefinedFind.length(); j++) // BROKE AF
+//		{
+//			if (*position == '\n')
+//				lineNumber++;
+//
+//			tokenString += *position;
+//			position++;
+//		}
+//		tokenString += "\"," + linecount + ")"; //that way it counts the first line number
+//		tokenList.push_back(tokenString);
+//	}
+//
+//	return tokenString;
+//}
 
 //----------------------------------------------------------------------------------------
 //THE MAIN
@@ -737,9 +734,6 @@ int main(int argc, char* argv[])
 
 		string tokenString = "";
 
-		SimpleFSM(longestLength, tokenString, tokenList, lineNumber, position);
-		ComplexFSM(longestLength, tokenString, tokenList, lineNumber, position);
-
 		whiteSpace(position); //skips over whitespace
 		NewLineDetect(position, lineNumber);
 
@@ -750,16 +744,15 @@ int main(int argc, char* argv[])
 	tokenList.push_back("(EOF,\"\"," + to_string(lineNumber) + ")");
 
 	//***********************************************************************************************************
-	//OUTPUT TO FILE:
+	//OUTPUT:
 
-	ofstream output;
-	output.open("OutputFile.txt");
+	
 	for (auto S : tokenList)
 	{
-		output << S << endl;
-		//cout << S << endl; //eventually write to a .txt file
+		
+		cout << S << endl; //eventually write to a .txt file
 	}
-	output << "Total Tokens = " << tokenList.size();
-	//cout << "Total Tokens = " << tokenList.size();
+	
+	cout << "Total Tokens = " << tokenList.size();
 	return 0;
 }
