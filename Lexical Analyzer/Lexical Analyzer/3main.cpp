@@ -3,6 +3,8 @@
 #include <fstream> // used for writing and reading files
 #include <string>
 
+#include <ctype.h>
+
 using namespace std;
 
 int const FOUND = 1;
@@ -726,6 +728,9 @@ int main(int argc, char* argv[])
 
         //--------------------------------------------------------------------------------------------------------------------
         //FINDING LONGEST ACCEPTER
+
+		whiteSpace(position); //skips over whitespace
+		NewLineDetect(position, lineNumber);
 
         string CommaFind = Comma(position); //so we don't have to keep calling the comma function, save time
         FindLongestLength(CommaFind, longestLength);
