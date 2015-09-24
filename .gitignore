@@ -13,3 +13,4 @@ Lexical Analyzer/Lexical Analyzer/Lexical Analyzer.vcxproj.filters
 *.opensdf
 *.enc
 *.enc
+Lexical Analyzer/Lexical Analyzer/OutputFile.txt

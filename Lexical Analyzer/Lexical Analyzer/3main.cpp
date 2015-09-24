@@ -12,6 +12,17 @@ string const BLANK = "";
 //-----------------------------------------------
 //FILE OPEN FUNCTION
 //don't really need this, but it will lower the complexity of main
+void OpenFile(string &inputString, int argc, char* mainArgv[])
+{
+    ifstream inputFile;
+    inputFile.open(mainArgv[1]);
+     string line; //will be used as
+    while (getline(inputFile, line)) //while we're not at the end of the file, take in input
+    {
+        inputString += line + "\n"; //add the file line by line into the inputString. Getline removes the \n, so we add it back in!
+    }
+    inputFile.close(); //close the File. we don't need it anymore
+}
 
 
 //can also make print function for for loop at the end. Not necesaarry, but lowers complexity in main
@@ -522,11 +533,8 @@ string MiddleFSM(int& longestLength, string &tokenString, vector <string> &token
     return tokenString;
 }
 
-string ComplexFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+string KeywordFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
 {
-    string ColonDashFind = ColonDash(position);
-    FindLongestLength(ColonDashFind, longestLength);
-
     //schemes
     string SchemesFind = Schemes(position);
     FindLongestLength(SchemesFind, longestLength);
@@ -535,24 +543,7 @@ string ComplexFSM(int& longestLength, string &tokenString, vector <string> &toke
     string FactsFind = Facts(position);
     FindLongestLength(FactsFind, longestLength);
 
-    //rules
-    string RulesFind = Rules(position);
-    FindLongestLength(RulesFind, longestLength);
 
-    //queries
-    string QueriesFind = Queries(position);
-    FindLongestLength(QueriesFind, longestLength);
-
-    //ID
-    string IDFind = ID(position);
-    FindLongestLength(IDFind, longestLength);
-
-
-    string CommentFind = Comment(position);
-    FindLongestLength(CommentFind, longestLength);
-
-    string UndefinedFind = Undefined(position);
-    FindLongestLength(UndefinedFind, longestLength);
 
     //SCHEMES
     if (longestLength == SchemesFind.length())
@@ -577,9 +568,23 @@ string ComplexFSM(int& longestLength, string &tokenString, vector <string> &toke
                 position++; //move position forward as many are in the string
         }
     }
+    return tokenString;
+
+}
+
+string KeywordFSM2(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+{
+    //rules
+    string RulesFind = Rules(position);
+    FindLongestLength(RulesFind, longestLength);
+
+    //queries
+    string QueriesFind = Queries(position);
+    FindLongestLength(QueriesFind, longestLength);
+
 
     //RULES
-    else if (longestLength == RulesFind.length())
+    if (longestLength == RulesFind.length())
     {
         tokenString = "(RULES,\"" + RulesFind + "\", " + to_string(lineNumber) + ")";
         tokenList.push_back(tokenString);
@@ -604,8 +609,24 @@ string ComplexFSM(int& longestLength, string &tokenString, vector <string> &toke
 
 
 
+    return tokenString;
+}
+
+
+string ComplexFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+{
+    //ID
+    string IDFind = ID(position);
+    FindLongestLength(IDFind, longestLength);
+
+
+    string CommentFind = Comment(position);
+    FindLongestLength(CommentFind, longestLength);
+
+
+
     //COMMENT
-    else if (longestLength == CommentFind.length())
+    if (longestLength == CommentFind.length())
     {
         tokenString = "(COMMENT,\"" + CommentFind + "\"," + to_string(lineNumber) + ")";
         tokenList.push_back(tokenString);
@@ -630,8 +651,17 @@ string ComplexFSM(int& longestLength, string &tokenString, vector <string> &toke
         }
     }
 
+    return tokenString;
+}
+
+string UndefinedFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+{
+
+    string UndefinedFind = Undefined(position);
+    FindLongestLength(UndefinedFind, longestLength);
     //UNDEFINED
-    else if (longestLength == UndefinedFind.length())
+
+    if (longestLength == UndefinedFind.length())
     {
         string linecount = to_string(lineNumber);
         string tokenString = "(UNDEFINED,\"";
@@ -649,7 +679,6 @@ string ComplexFSM(int& longestLength, string &tokenString, vector <string> &toke
 
     return tokenString;
 }
-
 //----------------------------------------------------------------------------------------
 //THE MAIN
 
@@ -658,25 +687,15 @@ int main(int argc, char* argv[])
     //----------------------------------------------------------------------------
     //OPEN THE FILE
 
-    ifstream inputFile;
-    inputFile.open(argv[1]);
-
-    char* position; //this variable will point to where we are in the input string
-
-    //    if (!inputFile.is_open()) //check that the file actually opened
-    //        cout << "not open" << endl;
 
     string inputString;
-    string line;
-    while (getline(inputFile, line)) //while we're not at the end of the file, take in input
-    {
-        inputString += line + "\n"; //add the file line by line into the inputString. Getline removes the \n, so we add it back in!
-    }
-    inputFile.close(); //close the File. we don't need it anymore
+    OpenFile(inputString, argc, argv);
 
+    char *position; //this vairable will point to where we are in the inputs string
     position = &inputString[0]; // pointer to first part of string
 
     int lineNumber = 1;
+
 
     //------------------------------------------------------------------------------------------------------------------------
     //THE SCANNER (THE WHILE LOOP)
@@ -773,9 +792,12 @@ int main(int argc, char* argv[])
 
         string test = SimpleFSM(longestLength, tokenString, tokenList, lineNumber, position);
         string test2 = MiddleFSM(longestLength, tokenString, tokenList, lineNumber, position);
+        string test3 = KeywordFSM(longestLength, tokenString, tokenList, lineNumber, position);
+        string test4 = KeywordFSM2(longestLength, tokenString, tokenList, lineNumber, position);
+        string test5 = ComplexFSM(longestLength, tokenString, tokenList, lineNumber, position);
 
-        if (test == BLANK && test2 == BLANK) //this statement adds 2 complexity! boo!
-            ComplexFSM(longestLength, tokenString, tokenList, lineNumber, position);
+        if (test == BLANK && test2 == BLANK && test3 == BLANK && test4 == BLANK && test5 == BLANK)
+            UndefinedFSM(longestLength, tokenString, tokenList, lineNumber, position);
 
         whiteSpace(position); //skips over whitespace
         NewLineDetect(position, lineNumber);
