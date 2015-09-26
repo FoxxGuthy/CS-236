@@ -3,12 +3,8 @@
 #include <fstream> // used for writing and reading files
 #include <string>
 
-#include <ctype.h>
-
 using namespace std;
 
-int const FOUND = 1;
-int const NOT_FOUND = 0;
 string const BLANK = "";
 
 //-----------------------------------------------
@@ -18,7 +14,7 @@ void OpenFile(string &inputString, int argc, char* mainArgv[])
 {
     ifstream inputFile;
     inputFile.open(mainArgv[1]);
-     string line; //will be used as
+    string line; //will be used as
     while (getline(inputFile, line)) //while we're not at the end of the file, take in input
     {
         inputString += line + "\n"; //add the file line by line into the inputString. Getline removes the \n, so we add it back in!
@@ -242,42 +238,36 @@ string StringFSM(char* position)
         next0++; //now points to char after finder
         char* next1 = next0;
         next1++; //now points to char after next0
-        while (*finder != '\'' && (*finder != '\0') && *next1 != '\0' ) //need to prevent ptr from going out of bounds... may probalby still go out of bounds...
+
+        while (/*(*finder != '\0') && */*next0 != '\0' || *next1 != '\0') //need to prevent ptr from going out of bounds... may probalby still go out of bounds...
         {
-            tokenString += *finder; //append next value
-            //if the next two chars are a single quote, move forward 2 and don't end the string
-
-
-
-            if ((*next0 == '\'') && (*next1 == '\''))
+            if ((*finder == '\'') && (*next0 == '\''))
             {
                 tokenString += "''";
                 finder++; //move to the first single quote
                 finder++; // mov to second single quote
-                finder++; //now pointing at the letter after the "apostrophe"
+                // finder++; //now pointing at the letter after the "apostrophe"
                 next0++;
                 next0++;
-                next0++;
+                //next0++;
                 next1++;
                 next1++;
-                next1++;
+                //next1++;
+            }
+            else if (*finder == '\'')
+            {
+                tokenString += "'"; //this should be the closing quote to the string
+                return tokenString;
             }
             else
             {
+                tokenString += *finder;
                 finder++;
                 next0++; //now points to char after finder
                 next1++; //now points to char after next0
             }
-
-
         }
-        if (*finder == '\'')
-        {
-            tokenString += "'"; //this should be the closing quote to the string
-            return tokenString;
-        }
-        else
-            return BLANK;
+        return BLANK;
     }
     else
         return BLANK;
@@ -334,11 +324,13 @@ string Comment(char* position)
 
 void whiteSpace(char* &position)
 {
-    while (*position == ' ')
+    if (*position != '\n')
     {
-        position++;
+        while (isspace(*position) && *position != '\n')//while also takein tabs!
+        {
+            position++;
+        }
     }
-    //could also use isspace
 }
 
 
@@ -347,8 +339,10 @@ void whiteSpace(char* &position)
 // if char is new line: position++, newLineCount++
 void NewLineDetect(char*& position, int& newLineCount)
 {
-    if (*position == '\n')
+    // cout << "newline while pre" << endl;
+    while(*position == '\n')
     {
+        // cout << "inside new line while" << endl;
         position++;
         newLineCount++;
     }
@@ -357,39 +351,67 @@ void NewLineDetect(char*& position, int& newLineCount)
 /*
 CAPTURE UNDEFINED
 */
+void UndefinedDigit( char *position, string& token)
+{
+    if ((isdigit(*position)))
+    {
+        //while (isdigit(*position))
+        // {
+        string s(1, *position);
+        token +=s;
+        position++;
+        // }
+        //return token;
+    }
+}
 string Undefined(char* position) //MAY NOT WORK WITH BROKEN STRINGS/COMMENTS EXAMPLE: 'A STRING
 {
     //check is it #| with no end?
-    //is it 'string with end?
+    string token;
+
+    UndefinedDigit(position, token);
+
     if (StringFSM(position) == "" && *position == '\'') //its starts with a ' but its not a string, so its an undefined string!
     {
-        string s;
+        //string s;
         while (*position != '\0')
         {
-            s += *position;
+            token += *position;
             position++;
         }
-        return s;
+        return token;
     }
 
     else if (Comment(position) == "" && *position == '#') //a multiline comment that hits EOF
     {
-        string C;
+        //string C;
         while (*position != '\0')
         {
-            C += *position;
+            token += *position;
             position++;
         }
-        return C;
+        //return token;
     }
+    //    else if (isdigit(*position))
+    //    {
+    //        //string number;
+    //        while (isdigit(*position))
+    //        {
+    //            string s(1, *position);
+    //            token +=s;
+    //            position++;
+    //        }
+    //        return token;
+    //    }
 
     else if (!isalnum(*position)) //its not a number or alpha, so just move along
     {
-        string s(1, *position); //make string first, or we lose that period when we move the position
-        return s;
+        token += (1, *position); //make string first, or we lose that period when we move the position
+
+        return token;
     }
     else
-        return BLANK;
+        return token;
 }
 
 
@@ -399,29 +421,29 @@ void FindLongestLength(string accepted, int& longestLength)
         longestLength = accepted.length();
 }
 
-string SimpleFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position) //to cut down complexity, this will call the simple FSMs
+string SimpleFSM(int longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position) //to cut down complexity, this will call the simple FSMs
 {
     string CommaFind = Comma(position); //so we don't have to keep calling the comma function, save time
-    FindLongestLength(CommaFind, longestLength);
+    //FindLongestLength(CommaFind, longestLength);
 
     string PeriodFind = Period(position);
-    FindLongestLength(PeriodFind, longestLength);
+    //FindLongestLength(PeriodFind, longestLength);
 
     string Q_markFind = Q_mark(position);
-    FindLongestLength(Q_markFind, longestLength);
+    //FindLongestLength(Q_markFind, longestLength);
 
     string Left_parenFind = Left_paren(position);
-    FindLongestLength(Left_parenFind, longestLength);
+    //FindLongestLength(Left_parenFind, longestLength);
 
     string Right_parenFind = right_paren(position);
-    FindLongestLength(Right_parenFind, longestLength);
+    //FindLongestLength(Right_parenFind, longestLength);
 
 
     string MultiFind = Multiply(position);
-    FindLongestLength(MultiFind, longestLength);
+    //FindLongestLength(MultiFind, longestLength);
 
     string AddFind = Add(position);
-    FindLongestLength(AddFind, longestLength);
+    //FindLongestLength(AddFind, longestLength);
 
 
     //COMMA
@@ -483,21 +505,24 @@ string SimpleFSM(int& longestLength, string &tokenString, vector <string> &token
     return tokenString;
 }
 
-string MiddleFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+string MiddleFSM(int longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
 {
+    if (tokenString != BLANK)
+        return BLANK;
+
     //neeed to take just 1 out of simple, then test taking a few from complex
 
     //COLON String
     string  ColonFind = Colon(position);
-    FindLongestLength(ColonFind, longestLength);
+    //FindLongestLength(ColonFind, longestLength);
 
     //COLON_DASH_STRING
     string ColonDashFind = ColonDash(position);
-    FindLongestLength(ColonDashFind, longestLength);
+    // FindLongestLength(ColonDashFind, longestLength);
 
     //stringstring
     string StringFSMFind = StringFSM(position);
-    FindLongestLength(StringFSMFind, longestLength);
+    //FindLongestLength(StringFSMFind, longestLength);
 
     //COLON
     if (longestLength == ColonFind.length())
@@ -535,22 +560,25 @@ string MiddleFSM(int& longestLength, string &tokenString, vector <string> &token
     return tokenString;
 }
 
-string KeywordFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+string KeywordFSM(int longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
 {
+    if (tokenString != BLANK)
+        return BLANK;
+
     //schemes
     string SchemesFind = Schemes(position);
-    FindLongestLength(SchemesFind, longestLength);
+    //FindLongestLength(SchemesFind, longestLength);
 
     //facts
     string FactsFind = Facts(position);
-    FindLongestLength(FactsFind, longestLength);
+    //FindLongestLength(FactsFind, longestLength);
 
 
 
     //SCHEMES
     if (longestLength == SchemesFind.length())
     {
-        tokenString = "(SCHEMES,\"" + SchemesFind + "\", " + to_string(lineNumber) + ")";
+        tokenString = "(SCHEMES,\"" + SchemesFind + "\"," + to_string(lineNumber) + ")";
         tokenList.push_back(tokenString);
         for (int i = 0; i < longestLength; i++)
         {
@@ -562,7 +590,7 @@ string KeywordFSM(int& longestLength, string &tokenString, vector <string> &toke
     //FACTS
     else if (longestLength == FactsFind.length())
     {
-        tokenString = "(FACTS,\"" + FactsFind + "\", " + to_string(lineNumber) + ")";
+        tokenString = "(FACTS,\"" + FactsFind + "\"," + to_string(lineNumber) + ")";
         tokenList.push_back(tokenString);
         for (int i = 0; i < longestLength; i++)
         {
@@ -574,21 +602,24 @@ string KeywordFSM(int& longestLength, string &tokenString, vector <string> &toke
 
 }
 
-string KeywordFSM2(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+string KeywordFSM2(int longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
 {
+    if (tokenString != BLANK)
+        return BLANK;
+
     //rules
     string RulesFind = Rules(position);
-    FindLongestLength(RulesFind, longestLength);
+    //FindLongestLength(RulesFind, longestLength);
 
     //queries
     string QueriesFind = Queries(position);
-    FindLongestLength(QueriesFind, longestLength);
+    //FindLongestLength(QueriesFind, longestLength);
 
 
     //RULES
     if (longestLength == RulesFind.length())
     {
-        tokenString = "(RULES,\"" + RulesFind + "\", " + to_string(lineNumber) + ")";
+        tokenString = "(RULES,\"" + RulesFind + "\"," + to_string(lineNumber) + ")";
         tokenList.push_back(tokenString);
         for (int i = 0; i < longestLength; i++)
         {
@@ -615,15 +646,18 @@ string KeywordFSM2(int& longestLength, string &tokenString, vector <string> &tok
 }
 
 
-string ComplexFSM(int& longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
+string ComplexFSM(int longestLength, string &tokenString, vector <string> &tokenList, int &lineNumber, char* &position)
 {
+    if (tokenString != BLANK)
+        return BLANK;
+
     //ID
     string IDFind = ID(position);
-    FindLongestLength(IDFind, longestLength);
+    //FindLongestLength(IDFind, longestLength);
 
 
     string CommentFind = Comment(position);
-    FindLongestLength(CommentFind, longestLength);
+    //FindLongestLength(CommentFind, longestLength);
 
 
 
@@ -660,7 +694,7 @@ string UndefinedFSM(int& longestLength, string &tokenString, vector <string> &to
 {
 
     string UndefinedFind = Undefined(position);
-    FindLongestLength(UndefinedFind, longestLength);
+    //FindLongestLength(UndefinedFind, longestLength);
     //UNDEFINED
 
     if (longestLength == UndefinedFind.length())
@@ -724,13 +758,16 @@ int main(int argc, char* argv[])
     //iterate thru the inputString, however big it is
     for (unsigned i = 0; i < (inputString.size() - 1); i++)
     {
+        if (*position == '\0') //THE EMPTY CHAR!!! EOF
+            break;
+
         int longestLength = 0; //will store the longest
 
         //--------------------------------------------------------------------------------------------------------------------
         //FINDING LONGEST ACCEPTER
 
-		whiteSpace(position); //skips over whitespace
-		NewLineDetect(position, lineNumber);
+        whiteSpace(position); //skips over whitespace
+        NewLineDetect(position, lineNumber);
 
         string CommaFind = Comma(position); //so we don't have to keep calling the comma function, save time
         FindLongestLength(CommaFind, longestLength);
@@ -788,6 +825,8 @@ int main(int argc, char* argv[])
         string UndefinedFind = Undefined(position);
         FindLongestLength(UndefinedFind, longestLength);
 
+        //cout << longestLength << endl;
+
         //-----------------------------------------------------------------------------------------
         //TOKENIZING LOGIC & VECTOR STORAGE
 
@@ -796,19 +835,27 @@ int main(int argc, char* argv[])
         string tokenString = "";
 
         string test = SimpleFSM(longestLength, tokenString, tokenList, lineNumber, position);
-        string test2 = MiddleFSM(longestLength, tokenString, tokenList, lineNumber, position);
-        string test3 = KeywordFSM(longestLength, tokenString, tokenList, lineNumber, position);
+        //cout << "post simpleFSM" << endl;
+        NewLineDetect(position, lineNumber);
+        string test2 = MiddleFSM(longestLength, tokenString, tokenList, lineNumber, position); //ID called
+        NewLineDetect(position, lineNumber);
+        string test3 = KeywordFSM(longestLength, tokenString, tokenList, lineNumber, position); //keywords here
+        NewLineDetect(position, lineNumber);
         string test4 = KeywordFSM2(longestLength, tokenString, tokenList, lineNumber, position);
+        NewLineDetect(position, lineNumber);
         string test5 = ComplexFSM(longestLength, tokenString, tokenList, lineNumber, position);
+        NewLineDetect(position, lineNumber);
 
         if (test == BLANK && test2 == BLANK && test3 == BLANK && test4 == BLANK && test5 == BLANK)
             UndefinedFSM(longestLength, tokenString, tokenList, lineNumber, position);
 
         whiteSpace(position); //skips over whitespace
+        // cout << "whitespace" << endl;
         NewLineDetect(position, lineNumber);
+        // cout << "newline final" << endl;
 
-        if (*position == '\0') //THE EMPTY CHAR!!! EOF
-            break;
+        //        if (*position == '\0') //THE EMPTY CHAR!!! EOF
+        //            break;
     }
 
     tokenList.push_back("(EOF,\"\"," + to_string(lineNumber) + ")");
