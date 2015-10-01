@@ -1,0 +1,11 @@
+*.sdf
+Lexical Analyzer/Lexical Analyzer.sln
+*.enc
+Lexical Analyzer/Lexical Analyzer/Debug/Lexical Analyzer.tlog/CL.command.1.tlog
+*.lastbuildstate
+Lexical Analyzer/Lexical Analyzer/Debug/Lexical Analyzer.tlog/link.command.1.tlog
+*.txt
+Lexical Analyzer/Lexical Analyzer/Lexical Analyzer.vcxproj
+*.tlog
+Lexical Analyzer/Lexical Analyzer/Debug/vc140.idb
+*.filters
