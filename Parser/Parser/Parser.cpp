@@ -12,15 +12,13 @@ Parser::Parser()
 Parser::~Parser()
 {
 }
-
-void Parser::match(tokenType T, vector<string> &storage ) //for storing IDs, specifically in schemes
+//used for storing scheme IDs in vectors
+//used for storing fact strings (the domain) in vectors
+void Parser::match(tokenType T, vector<string> &storage )
 {
 	if (T == currentToken.getType())
 	{
-		if (T == myID) //IDs are really important to things, other chars can be reput in toString()
-		{
-			storage.push_back(currentToken.getValue());
-		}
+		storage.push_back(currentToken.getValue());
 		currentIndex++;
 	}
 	else
@@ -29,7 +27,9 @@ void Parser::match(tokenType T, vector<string> &storage ) //for storing IDs, spe
 	}
 }
 
-void Parser::match(tokenType T) //some times we just need to check if its the same, for example COLON, SCHEMES, etch
+//some times we just need to check if its the same, for example COLON, SCHEMES, etch
+//matches terminal token types
+void Parser::match(tokenType T) 
 {
 	if (T == currentToken.getType())
 	{
@@ -40,6 +40,7 @@ void Parser::match(tokenType T) //some times we just need to check if its the sa
 		throw(currentToken);
 	}
 }
+
 
 void Parser::setCurrentToken(vector<Token> toParse)
 {
@@ -68,6 +69,14 @@ void Parser::parseDataLog(vector<Token> toParse)
 
 	//-----------------------------------------------------------
 	//RULE 2 FACTS COLON factList
+
+	setCurrentToken(toParse);
+	match(FACTS);
+
+	setCurrentToken(toParse);
+	match(COLON);
+
+	parseFactList(toParse);
 
 	//-----------------------------------------------------------
 	//RULE 3 RULES COLON ruleList
@@ -100,22 +109,21 @@ void Parser::parseScheme(vector<Token> toParse)
 	match(RIGHT_PAREN);
 
 	AllthatData.schemeVector.push_back(temp);
-	//delete temp?
+	//delete temp;
 }
 
 void Parser::parseSchemeList(vector<Token> toParse)
 {
 	//scheme schemeList | lambda
 	//scheme list will always be followed by FACTS so we'll break there
-	while (toParse[currentIndex].getType() != FACTS  && toParse[currentIndex].getType() != myEOF) //since we don't have facts.. check for EOF? //loop executing an extra time
+	while (toParse[currentIndex].getType() != FACTS) 
 	{
 		parseScheme(toParse);
-		//AllthatData.schemeVector.push_back()
 		parseSchemeList(toParse);
 	}
 }
 
-void Parser::parseIDList(vector<Token> toParse, vector<string> scheme_OR_pred)
+void Parser::parseIDList(vector<Token> toParse, vector<string> &scheme_OR_pred)
 {
 	//COMMA ID idList | lambda 
 	//idList is always followed by a ) so we'll break there
@@ -133,10 +141,62 @@ void Parser::parseIDList(vector<Token> toParse, vector<string> scheme_OR_pred)
 	}
 }
 
+void Parser::parseFact(vector<Token> toParse)
+{
+	// ID LEFT_PAREN STRING stringList RIGHT_PAREN PERIOD
+
+	Fact* tempFact = new Fact();
+
+	setCurrentToken(toParse);
+	match(myID, tempFact->factStringVector); //the fact ID
+
+	setCurrentToken(toParse);
+	match(LEFT_PAREN);
+
+	setCurrentToken(toParse);
+	match(mySTRING, tempFact->factStringVector); //its vector of strings. This is the domain. 
+
+	parseStringList(toParse, tempFact->factStringVector);
+
+	setCurrentToken(toParse);
+	match(RIGHT_PAREN);
+	
+	setCurrentToken(toParse);
+	match(PERIOD);
+
+	AllthatData.factVector.push_back(tempFact);
+}
+
+void Parser::parseFactList(vector<Token> toParse)
+{
+	//fact factlist | lambda
+	while (toParse[currentIndex].getType() != RULES  && toParse[currentIndex].getType() != myEOF)
+	{
+		parseFact(toParse);
+		parseFactList(toParse);
+	}
+}
+
 void Parser::parseHeadPred(vector<Token> toParse)
 {
 }
 
 void Parser::parseOperator(vector<Token> toParse)
 {
+}
+
+void Parser::parseStringList(vector<Token> toParse, vector<string> &factStrings)
+{
+	//stringList	->	COMMA STRING stringList | lambda 
+	//string list is always followed by a right paren so we'll check for that to end recursion
+	while (toParse[currentIndex].getType() != RIGHT_PAREN)
+	{
+		setCurrentToken(toParse);
+		match(COMMA);
+
+		setCurrentToken(toParse);
+		match(mySTRING, factStrings);
+
+		parseStringList(toParse, factStrings);
+	}
 }

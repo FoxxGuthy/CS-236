@@ -27,6 +27,8 @@ public:
 
 	//parse datalog
 	void parseDataLog(vector<Token> toParse);
+
+
 	//parse scheme
 	void parseScheme(vector<Token> toParse);
 	//schemelist
@@ -34,9 +36,12 @@ public:
 
 	
 	//ID
-	void parseIDList(vector<Token> toParse, vector<string> scheme_OR_pred);
-	//parse fact 
+	void parseIDList(vector<Token> toParse, vector<string> &scheme_OR_pred);
+	
+	//parse fact
+	void parseFact(vector<Token> toParse);
 	//parse list
+	void parseFactList(vector<Token> toParse);
 
 	//parse rule 
 	//parse rule list
@@ -58,5 +63,6 @@ public:
 	//querylist
 	
 	//parse string list
+	void parseStringList(vector<Token> toParse, vector<string> &factStrings);
 };
 

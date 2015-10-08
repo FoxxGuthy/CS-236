@@ -867,7 +867,6 @@ int main(int argc, char* argv[])
 		cout << "Failure!" << endl;
 		cout << T.toString();
 	}
-
     return 0;
 }
 
