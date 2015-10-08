@@ -4,6 +4,7 @@
 #include <string>
 
 #include "token.h"
+#include "Parser.h"
 
 using namespace std;
 
@@ -443,7 +444,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     if (longestLength == CommaFind.length())  //when not all machines are active and we get a zero, it'll just cycle thru here...0 == 0; TRUE!
     {
         tokenString = "(COMMA,\",\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("COMMA",",",lineNumber));
+        tokenList.push_back(Token(COMMA,",",lineNumber));
         position++;
     }
 
@@ -451,7 +452,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == PeriodFind.length())
     {
         tokenString = "(PERIOD,\".\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("PERIOD",".",lineNumber));
+        tokenList.push_back(Token(PERIOD,".",lineNumber));
         position++;
     }
 
@@ -459,7 +460,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == Q_markFind.length())
     {
         tokenString = "(Q_MARK,\"?\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("Q_MARK","?",lineNumber));
+        tokenList.push_back(Token(Q_MARK,"?",lineNumber));
         position++;
     }
 
@@ -467,7 +468,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == Left_parenFind.length())
     {
         tokenString = "(LEFT_PAREN,\"(\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("LEFT_PAREN","(",lineNumber));
+        tokenList.push_back(Token(LEFT_PAREN,"(",lineNumber));
         position++;
     }
 
@@ -475,7 +476,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == Right_parenFind.length())
     {
         tokenString = "(RIGHT_PAREN,\")\"," + to_string(lineNumber) + ")";
-		tokenList.push_back(Token("RIGHT_PAREN", ")", lineNumber));
+		tokenList.push_back(Token(RIGHT_PAREN, ")", lineNumber));
         position++;
     }
 
@@ -483,7 +484,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == MultiFind.length())
     {
         tokenString = "(MULTIPLY,\"*\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("MULTIPLY","*",lineNumber));
+        tokenList.push_back(Token(MULTIPLY,"*",lineNumber));
         position++;
     }
 
@@ -491,7 +492,7 @@ string SimpleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == AddFind.length())
     {
         tokenString = "(ADD,\"+\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("ADD","+",lineNumber));
+        tokenList.push_back(Token(ADD,"+",lineNumber));
         position++;
     }
 
@@ -518,7 +519,7 @@ string MiddleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     if (longestLength == ColonFind.length())
     {
         tokenString = "(COLON,\":\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("COLON",":",lineNumber));
+        tokenList.push_back(Token(COLON,":",lineNumber));
         position++;
     }
 
@@ -526,7 +527,7 @@ string MiddleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == ColonDashFind.length())
     {
         tokenString = "(COLON_DASH,\":-\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("COLON_DASH",":-",lineNumber));
+        tokenList.push_back(Token(COLON_DASH,":-",lineNumber));
         position++;
         position++;
     }
@@ -535,7 +536,7 @@ string MiddleFSM(int longestLength, string &tokenString, vector <Token> &tokenLi
     else if (longestLength == StringFSMFind.length())
     {
         tokenString = "(STRING,\"" + StringFSMFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("STRING",StringFSMFind,lineNumber));
+        tokenList.push_back(Token(mySTRING,StringFSMFind,lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position == '\n')
@@ -569,7 +570,7 @@ string KeywordFSM(int longestLength, string &tokenString, vector <Token> &tokenL
     if (longestLength == SchemesFind.length())
     {
         tokenString = "(SCHEMES,\"" + SchemesFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("SCHEMES",SchemesFind,lineNumber));
+        tokenList.push_back(Token(SCHEMES,SchemesFind,lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position != '\n') //we want the newline to survive so we can up the number
@@ -581,7 +582,7 @@ string KeywordFSM(int longestLength, string &tokenString, vector <Token> &tokenL
     else if (longestLength == FactsFind.length())
     {
         tokenString = "(FACTS,\"" + FactsFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("FACTS",FactsFind,lineNumber));
+        tokenList.push_back(Token(FACTS,FactsFind,lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position != '\n') //we want the newline to survive so we can up the number
@@ -610,7 +611,7 @@ string KeywordFSM2(int longestLength, string &tokenString, vector <Token> &token
     if (longestLength == RulesFind.length())
     {
         tokenString = "(RULES,\"" + RulesFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("RULES",RulesFind, lineNumber));
+        tokenList.push_back(Token(RULES,RulesFind, lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position != '\n') //we want the newline to survive so we can up the number
@@ -622,7 +623,7 @@ string KeywordFSM2(int longestLength, string &tokenString, vector <Token> &token
     else if (longestLength == QueriesFind.length())
     {
         tokenString = "(QUERIES,\"" + QueriesFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("QUERIES",QueriesFind,lineNumber));
+        tokenList.push_back(Token(QUERIES,QueriesFind,lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position != '\n') //we want the newline to survive so we can up the number
@@ -655,7 +656,8 @@ string ComplexFSM(int longestLength, string &tokenString, vector <Token> &tokenL
     if (longestLength == CommentFind.length())
     {
         tokenString = "(COMMENT,\"" + CommentFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("COMMENT",CommentFind,lineNumber));
+		//commented out because we want to ignore comments and stuff
+        //tokenList.push_back(Token("COMMENT",CommentFind,lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position == '\n')
@@ -669,7 +671,7 @@ string ComplexFSM(int longestLength, string &tokenString, vector <Token> &tokenL
     else if (longestLength == IDFind.length())
     {
         tokenString = "(ID,\"" + IDFind + "\"," + to_string(lineNumber) + ")";
-        tokenList.push_back(Token("ID",IDFind,lineNumber));
+        tokenList.push_back(Token(myID,IDFind,lineNumber));
         for (int i = 0; i < longestLength; i++)
         {
             if (*position != '\n') //we want the newline to survive so we can up the number
@@ -690,6 +692,7 @@ string UndefinedFSM(int& longestLength, string &tokenString, vector <Token> &tok
     if (longestLength == UndefinedFind.length())
     {
         string linecount = to_string(lineNumber);
+		tokenList.push_back(Token(UNDEFINED, UndefinedFind, lineNumber));
         string tokenString = "(UNDEFINED,\"";
         for (unsigned j = 0; j < UndefinedFind.length(); j++) // BROKE AF
         {
@@ -700,7 +703,7 @@ string UndefinedFSM(int& longestLength, string &tokenString, vector <Token> &tok
             position++;
         }
         tokenString += "\"," + linecount + ")"; //that way it counts the first line number
-        tokenList.push_back(Token("UNDEFINED",UndefinedFind,lineNumber));
+        
     }
 
     return tokenString;
@@ -815,7 +818,6 @@ int main(int argc, char* argv[])
         string UndefinedFind = Undefined(position);
         FindLongestLength(UndefinedFind, longestLength);
 
-        //cout << longestLength << endl;
 
         //-----------------------------------------------------------------------------------------
         //TOKENIZING LOGIC & VECTOR STORAGE
@@ -842,18 +844,30 @@ int main(int argc, char* argv[])
         whiteSpace(position); //skips over whitespace
         // cout << "whitespace" << endl;
         NewLineDetect(position, lineNumber);
-        // cout << "newline final" << endl;
 
         //        if (*position == '\0') //THE EMPTY CHAR!!! EOF
         //            break;
     }
 
-	tokenList.push_back(Token("EOF","", lineNumber));
+	tokenList.push_back(Token(myEOF,"", lineNumber));
 
     //***********************************************************************************************************
     //OUTPUT TO FILE:
 
-    Output(tokenList);
+    //Output(tokenList);
+
+	try
+	{
+		Parser parse;
+		parse.parseDataLog(tokenList);
+		cout << parse.AllthatData.ToString();
+	}
+	catch (Token T)
+	{
+		cout << "Failure!" << endl;
+		cout << T.toString();
+	}
+
     return 0;
 }
 

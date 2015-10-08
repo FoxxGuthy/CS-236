@@ -4,15 +4,42 @@
 
 using namespace std;
 
+enum tokenType {
+	COMMA,
+	PERIOD,
+	Q_MARK,
+	LEFT_PAREN,
+	RIGHT_PAREN,
+	COLON,
+	COLON_DASH,
+	MULTIPLY,
+	ADD,
+	SCHEMES,
+	FACTS,
+	RULES,
+	QUERIES,
+	myID,
+	mySTRING,
+	COMMENT,
+	UNDEFINED,
+	myEOF
+};
+
 class Token
 {
 public:
-	Token(string newType, string newValue, int line);
+	Token(tokenType newType, string newValue, int line);
 	~Token();
 	string toString();
 
-private:
-	string type;
+	tokenType getType();
+	string getValue();
+	int getLineNumber();
+
+
+
+//private:
+	tokenType type;
 	string tokenValue;
 	int lineNumber;
 };
