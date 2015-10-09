@@ -865,7 +865,7 @@ int main(int argc, char* argv[])
 	catch (Token T)
 	{
 		cout << "Failure!" << endl;
-		cout << T.toString();
+		cout << " " << T.toString();
 	}
     return 0;
 }

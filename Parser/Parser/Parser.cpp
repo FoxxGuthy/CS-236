@@ -214,8 +214,9 @@ void Parser::parseRule(vector<Token> toParse)
 	ParamDataIndex = 0;
 
 	tempRule.rulePredicateVec.push_back(Predicate());
+	int index = tempRule.rulePredicateVec.size() - 1;
 
-	parseHeadPred(toParse, tempRule.rulePredicateVec[RuleIndex].PredIDsVec);
+	parseHeadPred(toParse, tempRule.rulePredicateVec[index].PredIDsVec);
 
 	//tempRule.rulePredicateVec.push_back(Predicate());
 

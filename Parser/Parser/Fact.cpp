@@ -21,7 +21,7 @@ string Fact::toString()
 		if (factStringVector[i] != factStringVector.back())
 			ss << ",";
 	}
-	ss << ")";
+	ss << ").";
 	return ss.str();
 }
 
