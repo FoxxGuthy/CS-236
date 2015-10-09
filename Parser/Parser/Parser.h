@@ -48,9 +48,9 @@ public:
 	void parseRuleList(vector<Token> toParse);
 
 	//prase head pred
-	void Parser::parseHeadPred(vector<Token> toParse, vector<string>& PredIDs);
+	void parseHeadPred(vector<Token> toParse, vector<string>& PredIDs);
 	//parse pred
-	void Parser::parsePred(vector<Token> toParse, vector<Predicate>& ruleORqueryPRED);
+	void parsePred(vector<Token> toParse, vector<Predicate>& ruleORqueryPRED);
 	//parse list
 	void parsePredList(vector<Token> toParse, vector<Predicate >& listOfPredicates, Rule tempRule);
 
