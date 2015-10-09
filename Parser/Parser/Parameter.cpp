@@ -1,10 +1,9 @@
 #include "Parameter.h"
 
 //Will this handle expressions?
-Parameter::Parameter(string newData, tokenType T)
+Parameter::Parameter( /*tokenType T*/)
 {
-	info = newData;
-	type = T;
+	//type = T;
 }
 
 Parameter::~Parameter()
@@ -13,6 +12,13 @@ Parameter::~Parameter()
 
 string Parameter::toString()
 {
+	stringstream ss;
+	for (int i = 0; i < data.size(); i++)
+	{
+		ss << data[i];
 
-	return string();
+		if (!data[i].back()) 
+			ss << ",";
+	}
+	return ss.str();
 }

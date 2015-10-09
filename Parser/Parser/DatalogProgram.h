@@ -4,8 +4,8 @@
 #include <sstream>
 #include "Scheme.h"
 #include "Fact.h"
-//#include "Rule.h"
-//#include "Query.h"
+#include "Rule.h"
+#include "Query.h"
 
 using namespace std;
 
@@ -17,15 +17,15 @@ public:
 
 	vector<Scheme*> schemeVector;
 	vector<Fact*> factVector;
-	//vector<Rule*> ruleVector;
-	//vector<Query*> queryVector;
+	vector<Rule*> ruleVector;
+	vector<Query*> queryVector;
 
 	
 
 	string schemeToString();
 	string factToString();
-	//string ruleToString();
-	//string queryToString();
+	string ruleToString();
+	string queryToString();
 
 
 	string domainToString();

@@ -50,28 +50,28 @@ void DatalogProgram::updateDomain()
 	domainList.sort();
 }
 
-//string DatalogProgram::ruleToString()
-//{
-//	stringstream ss;
-//	ss << "Schemes(" << ruleVector.size() << "):" << endl;
-//	for (auto &ru : ruleVector)
-//	{
-//		//ss << "  " << sc->ToString() << endl;
-//	}
-//	return ss.str();
-//}
-//
-//string DatalogProgram::queryToString()
-//{
-//	stringstream ss;
-//	ss << "Schemes(" << queryVector.size() << "):" << endl;
-//	for (auto &qu : queryVector)
-//	{
-//		//ss << "  " << sc->ToString() << endl;
-//	}
-//	return ss.str();
-//}
-//
+string DatalogProgram::ruleToString()
+{
+	stringstream ss;
+	ss << "Rules(" << ruleVector.size() << "):" << endl;
+	for (auto ru : ruleVector)
+	{
+		ss << "  " << ru->toString() << endl;
+	}
+	return ss.str();
+}
+
+string DatalogProgram::queryToString()
+{
+	stringstream ss;
+	ss << "Queries(" << queryVector.size() << "):" << endl;
+	for (auto qu : queryVector)
+	{
+		ss << "  " << qu->toString() << endl;
+	}
+	return ss.str();
+}
+
 string DatalogProgram::domainToString()
 {
 	updateDomain();
@@ -90,7 +90,6 @@ string DatalogProgram::ToString()
 	stringstream returnString;
 	returnString << "Success!" << endl;
 
-	
-	returnString << schemeToString() << factToString() /*<< ruleToString() << queryToString()*/ << domainToString();
+	returnString << schemeToString() << factToString() << ruleToString() << queryToString() << domainToString();
 	return returnString.str();
 }

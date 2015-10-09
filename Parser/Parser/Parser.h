@@ -3,6 +3,8 @@
 #include "token.h"
 #include "DatalogProgram.h"
 
+
+
 using namespace std;
 
 //I want to get out of that massive main from Lab 1, so we're gonna try to build as much as possible here
@@ -12,9 +14,6 @@ public:
 	Parser();
 	~Parser();
 
-	//Token currentToken;
-
-	//void parse(vector<Token> &toParse);
 	void match(tokenType T, vector<string>& YourMom);
 	void match(tokenType T); //overload that sucker
 	void setCurrentToken(vector<Token> toParse);
@@ -44,25 +43,37 @@ public:
 	void parseFactList(vector<Token> toParse);
 
 	//parse rule 
+	void parseRule(vector<Token> toParse);
 	//parse rule list
+	void parseRuleList(vector<Token> toParse);
 
 	//prase head pred
-	void parseHeadPred(vector<Token> toParse);
+	void Parser::parseHeadPred(vector<Token> toParse, vector<string>& PredIDs);
 	//parse pred
+	void Parser::parsePred(vector<Token> toParse, vector<Predicate*>& ruleORqueryPRED);
 	//parse list
+	void parsePredList(vector<Token> toParse, vector<Predicate*>& stuff);
 
 	//parse param
+	void Parser::parseParameter(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam);
 	//parse param list
+	void Parser::parseParameterList(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam);
 
-	//parse expression	
+	//parse expression
+	void Parser::parseExpression(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam);
 
 	//parse operator
-	void parseOperator(vector<Token> toParse);
+	void Parser::parseOperator(vector<Token> toParse, vector<Parameter*> moreStuff);
 
 	//parse query 
+	void parseQuery(vector<Token> toParse);
 	//querylist
+	void parseQueryList(vector<Token> toParse);
 	
 	//parse string list
 	void parseStringList(vector<Token> toParse, vector<string> &factStrings);
+
+
+	int whichIndex(bool);
 };
 

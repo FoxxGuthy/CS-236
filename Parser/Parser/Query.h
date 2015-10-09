@@ -1,10 +1,14 @@
 #pragma once
+#include "Predicate.h"
+
 class Query
 {
 public:
 	Query();
 	~Query();
 
-	Predicate queryPred;
+	vector<Predicate*> queryPred;
+
+	string toString();
 };
 

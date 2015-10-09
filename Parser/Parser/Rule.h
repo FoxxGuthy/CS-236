@@ -1,5 +1,6 @@
 #pragma once
 #include "Predicate.h"
+
 class Rule
 {
 public:
@@ -8,8 +9,6 @@ public:
 
 	string toString();
 
-private:
-	Predicate ruleHeadPred;
-	Predicate rulePred;
+	vector<Predicate*> rulePredicateVec;
 };
 

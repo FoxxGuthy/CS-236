@@ -1,14 +1,17 @@
 #pragma once
 #include "token.h"
+#include <vector>
 #include <sstream>
+
+
 class Parameter
 {
 public:
-	Parameter(string newData, tokenType T);
+	Parameter(/*tokenType T*/);
 	virtual ~Parameter();
 
-private:
-	string info;
+
+	vector<string> data;
 	tokenType type;
 	string toString();
 
