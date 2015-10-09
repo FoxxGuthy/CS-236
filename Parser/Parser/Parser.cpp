@@ -214,12 +214,10 @@ void Parser::parseRule(vector<Token> toParse)
 	ParamDataIndex = 0;
 
 	tempRule.rulePredicateVec.push_back(Predicate());
-	//tempRule->rulePredicateVec.push_back(new Predicate);
-	//there's no predicates yet, so we can't access their IDs yet. make a new pred and pass abck?
-	
+
 	parseHeadPred(toParse, tempRule.rulePredicateVec[RuleIndex].PredIDsVec);
 
-	tempRule.rulePredicateVec.push_back(Predicate());
+	//tempRule.rulePredicateVec.push_back(Predicate());
 
 	PredVecIndex++;
 
@@ -227,9 +225,6 @@ void Parser::parseRule(vector<Token> toParse)
 	match(COLON_DASH);
 
 	parsePred(toParse, tempRule.rulePredicateVec);
-
-	//tempRule.rulePredicateVec.push_back(Predicate());
-	//PredVecIndex++;
 
 	parsePredList(toParse, tempRule.rulePredicateVec, tempRule);
 
@@ -283,9 +278,6 @@ void Parser::parsePred(vector<Token> toParse, vector<Predicate >& ruleORqueryPRE
 	setCurrentToken(toParse);
 	match(LEFT_PAREN);
 
-	//ruleORqueryPRED.push_back(Predicate());
-	//PredVecIndex++;
-
 	parseParameter(toParse, ruleORqueryPRED[PredVecIndex].PredParmVec);
 
 	parseParameterList(toParse, ruleORqueryPRED[PredVecIndex].PredParmVec);
@@ -305,12 +297,6 @@ void Parser::parsePredList(vector<Token> toParse, vector<Predicate >& listOfPred
 		match(COMMA);
 
 		parsePred(toParse, listOfPredicates);
-
-		//tempRule.rulePredicateVec.push_back(Predicate());
-
-		//PredVecIndex++;
-
-		//push back new pred
 
 		parsePredList(toParse, listOfPredicates, tempRule);
 	}
