@@ -15,10 +15,10 @@ public:
 	DatalogProgram();
 	~DatalogProgram();
 
-	vector<Scheme*> schemeVector;
-	vector<Fact*> factVector;
-	vector<Rule*> ruleVector;
-	vector<Query*> queryVector;
+	vector<Scheme> schemeVector;
+	vector<Fact> factVector;
+	vector<Rule> ruleVector;
+	vector<Query> queryVector;
 
 	
 

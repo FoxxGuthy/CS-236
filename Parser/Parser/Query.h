@@ -7,7 +7,7 @@ public:
 	Query();
 	~Query();
 
-	vector<Predicate*> queryPred;
+	vector<Predicate> queryPred;
 
 	string toString();
 };

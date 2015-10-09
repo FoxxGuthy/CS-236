@@ -17,7 +17,7 @@ string Parameter::toString()
 	{
 		ss << data[i];
 
-		if (!data[i].back()) 
+		if (data[i] != data.back()) 
 			ss << ",";
 	}
 	return ss.str();

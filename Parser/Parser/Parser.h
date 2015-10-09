@@ -50,20 +50,20 @@ public:
 	//prase head pred
 	void Parser::parseHeadPred(vector<Token> toParse, vector<string>& PredIDs);
 	//parse pred
-	void Parser::parsePred(vector<Token> toParse, vector<Predicate*>& ruleORqueryPRED);
+	void Parser::parsePred(vector<Token> toParse, vector<Predicate>& ruleORqueryPRED);
 	//parse list
-	void parsePredList(vector<Token> toParse, vector<Predicate*>& stuff);
+	void parsePredList(vector<Token> toParse, vector<Predicate >& listOfPredicates, Rule tempRule);
 
 	//parse param
-	void Parser::parseParameter(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam);
+	void parseParameter(vector<Token> toParse, vector<Parameter > & ruleORqueryParam);
 	//parse param list
-	void Parser::parseParameterList(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam);
+	void parseParameterList(vector<Token> toParse, vector<Parameter > & ruleORqueryParam);
 
 	//parse expression
-	void Parser::parseExpression(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam);
+	void parseExpression(vector<Token> toParse, vector<Parameter > & ruleORqueryParam);
 
 	//parse operator
-	void Parser::parseOperator(vector<Token> toParse, vector<Parameter*> moreStuff);
+	void parseOperator(vector<Token> toParse, vector<Parameter > moreStuff);
 
 	//parse query 
 	void parseQuery(vector<Token> toParse);
@@ -72,8 +72,5 @@ public:
 	
 	//parse string list
 	void parseStringList(vector<Token> toParse, vector<string> &factStrings);
-
-
-	int whichIndex(bool);
 };
 

@@ -18,7 +18,7 @@ public:
 	//possibly add type to make decisions on whether its a head or regular
 
 	vector<string> PredIDsVec;
-	vector<Parameter*> PredParmVec;
+	vector<Parameter > PredParmVec;
 
 	string toString();
 };

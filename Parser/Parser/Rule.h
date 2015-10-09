@@ -9,6 +9,6 @@ public:
 
 	string toString();
 
-	vector<Predicate*> rulePredicateVec;
+	vector<Predicate> rulePredicateVec;
 };
 

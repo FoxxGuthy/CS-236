@@ -2,20 +2,25 @@
 
 Token currentToken(COMMA, ",", 0);
 static int schemeVecIndex = 0;
-static int RuleIndex = 0;
+
+static int RuleIndex = 0; //how many rules
+
+static int PredVecIndex = 0; //how many predicates in a rule
+
+static int PredPramIndex = 0;
+static int ParamDataIndex = 0;
+
 static int queryIndex = 0;
-static bool parseQueryFlag = false;
 
 Parser::Parser()
 {
 	currentIndex = 0;
-	
 }
-
 
 Parser::~Parser()
 {
 }
+
 //used for storing scheme IDs in vectors
 //used for storing fact strings (the domain) in vectors
 void Parser::match(tokenType T, vector<string> &storage )
@@ -96,8 +101,6 @@ void Parser::parseDataLog(vector<Token> toParse)
 	//-----------------------------------------------------------
 	//RULE 4  QUERIES COLON query queryList
 
-	parseQueryFlag = true; //modifies pred functions to use the queryIndex for storage
-
 	setCurrentToken(toParse);
 	match(QUERIES);
 
@@ -116,24 +119,23 @@ void Parser::parseDataLog(vector<Token> toParse)
 
 void Parser::parseScheme(vector<Token> toParse)
 {
-	Scheme* temp = new Scheme(); //make a new Scheme class
+	Scheme  temp;//make a new Scheme class
 	//ID LEFT_PAREN ID idList RIGHT_PAREN
 	setCurrentToken(toParse);
-	match(myID, temp->IDvec); //pass the scheme's ID vec in
+	match(myID, temp.IDvec); //pass the scheme's ID vec in
 	
 	setCurrentToken(toParse);
 	match(LEFT_PAREN);
 
 	setCurrentToken(toParse);
-	match(myID, temp->IDvec);
+	match(myID, temp.IDvec);
 
-	parseIDList(toParse, temp->IDvec);
+	parseIDList(toParse, temp.IDvec);
 
 	setCurrentToken(toParse);
 	match(RIGHT_PAREN);
 
 	AllthatData.schemeVector.push_back(temp);
-	delete temp;
 }
 
 void Parser::parseSchemeList(vector<Token> toParse)
@@ -169,18 +171,18 @@ void Parser::parseFact(vector<Token> toParse)
 {
 	// ID LEFT_PAREN STRING stringList RIGHT_PAREN PERIOD
 
-	Fact* tempFact = new Fact();
+	Fact  tempFact;
 
 	setCurrentToken(toParse);
-	match(myID, tempFact->factStringVector); //the fact ID
+	match(myID, tempFact.factStringVector); //the fact ID
 
 	setCurrentToken(toParse);
 	match(LEFT_PAREN);
 
 	setCurrentToken(toParse);
-	match(mySTRING, tempFact->factStringVector); //its vector of strings. This is the domain. 
+	match(mySTRING, tempFact.factStringVector); //its vector of strings. This is the domain. 
 
-	parseStringList(toParse, tempFact->factStringVector);
+	parseStringList(toParse, tempFact.factStringVector);
 
 	setCurrentToken(toParse);
 	match(RIGHT_PAREN);
@@ -205,18 +207,31 @@ void Parser::parseRule(vector<Token> toParse)
 {
 	//rule    	->	headPredicate COLON_DASH predicate predicateList PERIOD
 
-	Rule* tempRule = new Rule();
-	tempRule->rulePredicateVec.push_back(new Predicate);
+	Rule tempRule;
+
+	PredVecIndex = 0;
+	PredPramIndex = 0;
+	ParamDataIndex = 0;
+
+	tempRule.rulePredicateVec.push_back(Predicate());
+	//tempRule->rulePredicateVec.push_back(new Predicate);
 	//there's no predicates yet, so we can't access their IDs yet. make a new pred and pass abck?
 	
-	parseHeadPred(toParse, tempRule->rulePredicateVec[RuleIndex]->PredIDsVec);
+	parseHeadPred(toParse, tempRule.rulePredicateVec[RuleIndex].PredIDsVec);
+
+	tempRule.rulePredicateVec.push_back(Predicate());
+
+	PredVecIndex++;
 
 	setCurrentToken(toParse);
 	match(COLON_DASH);
 
-	parsePred(toParse, tempRule->rulePredicateVec);
+	parsePred(toParse, tempRule.rulePredicateVec);
 
-	parsePredList(toParse, tempRule->rulePredicateVec);
+	//tempRule.rulePredicateVec.push_back(Predicate());
+	//PredVecIndex++;
+
+	parsePredList(toParse, tempRule.rulePredicateVec, tempRule);
 
 	setCurrentToken(toParse);
 	match(PERIOD);
@@ -231,6 +246,7 @@ void Parser::parseRuleList(vector<Token> toParse)
 	while (toParse[currentIndex].getType() != QUERIES)
 	{
 		parseRule(toParse);
+
 		parseRuleList(toParse);
 	}
 }
@@ -256,26 +272,31 @@ void Parser::parseHeadPred(vector<Token> toParse, vector<string>& PredIDs)
 	}
 }
 
-void Parser::parsePred(vector<Token> toParse, vector<Predicate*>& ruleORqueryPRED)
+void Parser::parsePred(vector<Token> toParse, vector<Predicate >& ruleORqueryPRED)
 {
-	int index = whichIndex(parseQueryFlag);
-	ruleORqueryPRED.push_back(new Predicate);
+	ParamDataIndex = 0;
+	ruleORqueryPRED.push_back( Predicate());
 	//predicate	->	ID LEFT_PAREN parameter parameterList RIGHT_PAREN
 	setCurrentToken(toParse);
-	match(myID, ruleORqueryPRED[index]->PredIDsVec);
+	match(myID, ruleORqueryPRED[PredVecIndex].PredIDsVec);
 
 	setCurrentToken(toParse);
 	match(LEFT_PAREN);
 
-	parseParameter(toParse, ruleORqueryPRED[index]->PredParmVec);
+	//ruleORqueryPRED.push_back(Predicate());
+	//PredVecIndex++;
 
-	parseParameterList(toParse, ruleORqueryPRED[index]->PredParmVec);
+	parseParameter(toParse, ruleORqueryPRED[PredVecIndex].PredParmVec);
+
+	parseParameterList(toParse, ruleORqueryPRED[PredVecIndex].PredParmVec);
 
 	setCurrentToken(toParse);
 	match(RIGHT_PAREN);
+
+	PredVecIndex++;
 }
 
-void Parser::parsePredList(vector<Token> toParse, vector<Predicate*>& listOfPredicates)
+void Parser::parsePredList(vector<Token> toParse, vector<Predicate >& listOfPredicates, Rule tempRule)
 {
 	//predicateList	->	COMMA predicate predicateList | lambda
 	while (toParse[currentIndex].getType() != PERIOD)
@@ -285,32 +306,39 @@ void Parser::parsePredList(vector<Token> toParse, vector<Predicate*>& listOfPred
 
 		parsePred(toParse, listOfPredicates);
 
-		parsePredList(toParse, listOfPredicates);
+		//tempRule.rulePredicateVec.push_back(Predicate());
+
+		//PredVecIndex++;
+
+		//push back new pred
+
+		parsePredList(toParse, listOfPredicates, tempRule);
 	}
 }
 
-void Parser::parseParameter(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam)
+void Parser::parseParameter(vector<Token> toParse, vector<Parameter > & ruleORqueryParam)
 {
-	int index = whichIndex(parseQueryFlag);
-	ruleORqueryParam.push_back(new Parameter);
-
+	int index = ParamDataIndex;
+	ruleORqueryParam.push_back(Parameter());
+	index = ruleORqueryParam.size() - 1;
 	setCurrentToken(toParse);
 
 	switch (currentToken.getType())
 	{
 	case mySTRING:
-		match(mySTRING, ruleORqueryParam[index]->data);
+		match(mySTRING, ruleORqueryParam[index].data);
 		break;
 	case myID:
-		match(myID, ruleORqueryParam[index]->data);
+		match(myID, ruleORqueryParam[index].data);
 		break;
 	default:
 		parseExpression(toParse, ruleORqueryParam);
 		break;
 	}
+	ParamDataIndex++;
 }
 
-void Parser::parseParameterList(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam)
+void Parser::parseParameterList(vector<Token> toParse, vector<Parameter > & ruleORqueryParam)
 {
 	//parameterList	-> 	COMMA parameter parameterList | lambda
 	while (toParse[currentIndex].getType() != RIGHT_PAREN)
@@ -324,7 +352,7 @@ void Parser::parseParameterList(vector<Token> toParse, vector<Parameter*> & rule
 	}
 }
 
-void Parser::parseExpression(vector<Token> toParse, vector<Parameter*> & ruleORqueryParam)
+void Parser::parseExpression(vector<Token> toParse, vector<Parameter > & ruleORqueryParam)
 {
 	//expression	-> 	LEFT_PAREN parameter operator parameter RIGHT_PAREN
 	setCurrentToken(toParse);
@@ -340,28 +368,38 @@ void Parser::parseExpression(vector<Token> toParse, vector<Parameter*> & ruleORq
 	match(RIGHT_PAREN);
 }
 
-void Parser::parseOperator(vector<Token> toParse, vector<Parameter*> moreStuff)
+void Parser::parseOperator(vector<Token> toParse, vector<Parameter > moreStuff)
 {
 	//operator	->	ADD | MULTIPLY
+	
 	setCurrentToken(toParse);
+
+	int index = 0;
+	moreStuff.push_back(Parameter());
+	index = moreStuff.size() - 1;
 
 	switch (currentToken.getType())
 	{
 	case ADD:
-		match(ADD/*, moreStuff*/);
+		match(ADD, moreStuff[index].data);
 		break;
 	default:
-		match(MULTIPLY/*, moreStuff*/); //this will test for multiply or just throw if its broken
+		match(MULTIPLY, moreStuff[index].data); //this will test for multiply or just throw if its broken
 		break;
 	}
+	//PredPramIndex++;
 }
 
 void Parser::parseQuery(vector<Token> toParse)
 {
 	//query->predicate Q_MARK
 
-	Query* tempQuery = new Query();
-	parsePred(toParse, tempQuery->queryPred);
+	Query tempQuery;
+	PredVecIndex = 0;
+	PredPramIndex = 0;
+	ParamDataIndex = 0;
+
+	parsePred(toParse, tempQuery.queryPred);
 
 	setCurrentToken(toParse);
 	match(Q_MARK);
@@ -398,11 +436,3 @@ void Parser::parseStringList(vector<Token> toParse, vector<string> &factStrings)
 	}
 }
 
-int Parser::whichIndex(bool queryFlag)
-{
-	if (queryFlag)
-		return queryIndex;
-
-	else
-		return RuleIndex;
-}

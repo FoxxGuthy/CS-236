@@ -17,7 +17,7 @@ string DatalogProgram::schemeToString()
 	ss << "Schemes(" << schemeVector.size() << "):" << endl;
 	for (auto sc : schemeVector)
 	{
-		ss << "  " << sc->toString() << endl;
+		ss << "  " << sc.toString() << endl;
 	}
 	return ss.str();
 }
@@ -28,7 +28,7 @@ string DatalogProgram::factToString()
 	ss << "Facts(" << factVector.size() << "):" << endl;
 	for (auto fa : factVector)
 	{
-		ss << "  " << fa->toString() << endl;
+		ss << "  " << fa.toString() << endl;
 	}
 	return ss.str();
 }
@@ -41,7 +41,7 @@ void DatalogProgram::updateDomain()
 	for (int i = 0; i < factVector.size(); i++) //for each fact
 	{
 		//merge the lists
-		domainList.merge(factVector[i]->getList());
+		domainList.merge(factVector[i].getList());
 	}
 
 	//remove duplicates from the domain
@@ -56,7 +56,7 @@ string DatalogProgram::ruleToString()
 	ss << "Rules(" << ruleVector.size() << "):" << endl;
 	for (auto ru : ruleVector)
 	{
-		ss << "  " << ru->toString() << endl;
+		ss << "  " << ru.toString() << endl;
 	}
 	return ss.str();
 }
@@ -67,7 +67,7 @@ string DatalogProgram::queryToString()
 	ss << "Queries(" << queryVector.size() << "):" << endl;
 	for (auto qu : queryVector)
 	{
-		ss << "  " << qu->toString() << endl;
+		ss << "  " << qu.toString() << endl;
 	}
 	return ss.str();
 }
