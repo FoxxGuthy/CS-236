@@ -157,7 +157,9 @@ bool minimax_draw(minimax_board_t* board)
 //entry function, calls minimax recursive
 void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, uint8_t* column)
 {
-
+	minimax(board, player);
+	*row = choice.row;
+	*column = choice.column;
 }
 
 bool minimax_isGameOver(minimax_score_t score)
