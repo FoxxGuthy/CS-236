@@ -69,4 +69,6 @@ int main() {
 	printf("next move for board4: (%d, %d)\n\r", row, column);
 	minimax_computeNextMove(&board5, false, &row, &column);
 	printf("next move for board5: (%d, %d)\n\r", row, column);
+
+	return 0;
 }

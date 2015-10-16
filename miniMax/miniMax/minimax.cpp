@@ -3,6 +3,8 @@
 #define MINIMAX_BOARD_SIZE 9
 minimax_move_t choice;
 
+bool testing = true; 
+
 //recurive fuction
 int8_t minimax(minimax_board_t *board, bool player)
 {	
@@ -37,6 +39,7 @@ int8_t minimax(minimax_board_t *board, bool player)
 				//add move to move-score table
 				moves[moveIndex].column = j;
 				moves[moveIndex].row = i;
+				moveIndex++;
 
 				//undo change to board for next iteration
 				board->squares[i][j] = MINIMAX_EMPTY_SQUARE;
@@ -53,6 +56,7 @@ int8_t minimax(minimax_board_t *board, bool player)
 			if (scores[i] > tempScore) //if the score in array is bigger, make that the new highscore and change move to that spot
 			{
 				tempScore = scores[i]; 
+				score = scores[i];  
 				choice.row = moves[i].row;
 				choice.column = moves[i].column;
 			}	
@@ -67,6 +71,7 @@ int8_t minimax(minimax_board_t *board, bool player)
 			if (scores[i] < tempScore) //if the score in array is smaller, make that the new low and change move to that spot
 			{
 				tempScore = scores[i]; //set score
+				score = scores[i];
 				choice.row = moves[i].row; //set move row
 				choice.column = moves[i].column; //set move column
 			}
