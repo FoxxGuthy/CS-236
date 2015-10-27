@@ -1,9 +1,11 @@
 /*
- * ticTacToeDisplay.c
+ * ticTacToeDisplay2.c
  *
- *  Created on: Oct 10, 2015
+ *  Created on: Oct 21, 2015
  *      Author: skguth10
  */
+
+#include "ticTacToeDisplay.h"
 
 //TTTD is short for TICTACTOEDISPLAY
 #include "src/buttons/buttons.h"
@@ -26,17 +28,17 @@
 
 //----------------------------------------------------------------------------------
 //DRAW X
-#define TTTD_DRAW_X_UPPERLEFT_X 20
-#define TTTD_DRAW_X_UPPERLEFT_Y 10
+#define TTTD_DRAW_X_UPPERLEFT_X 20 //left hand corner of X
+#define TTTD_DRAW_X_UPPERLEFT_Y 10 //left hand corner of X
 
-#define TTTD_DRAW_X_LOWERLEFT_X 20
-#define TTTD_DRAW_X_LOWERLEFT_Y (DISPLAY_HEIGHT/3)-10
+#define TTTD_DRAW_X_LOWERLEFT_X 20 //lower left corner of X
+#define TTTD_DRAW_X_LOWERLEFT_Y (DISPLAY_HEIGHT/3)-10 //lower left corner of X
 
-#define TTTD_DRAW_X_UPPERRIGHT_X (DISPLAY_WIDTH/3)-10
-#define TTTD_DRAW_X_UPPERRIGHT_Y 10
+#define TTTD_DRAW_X_UPPERRIGHT_X (DISPLAY_WIDTH/3)-10 //uper right corner
+#define TTTD_DRAW_X_UPPERRIGHT_Y 10 //uper right corner
 
-#define TTTD_DRAW_X_LOWERRIGHT_X (DISPLAY_WIDTH/3)-10
-#define TTTD_DRAW_X_LOWERRIGHT_Y (DISPLAY_HEIGHT/3)-10
+#define TTTD_DRAW_X_LOWERRIGHT_X (DISPLAY_WIDTH/3)-10 //lower right
+#define TTTD_DRAW_X_LOWERRIGHT_Y (DISPLAY_HEIGHT/3)-10//lower right
 
 //#define
 //----------------------------------------------------------------------------------
@@ -115,44 +117,44 @@ void ticTacToeDisplay_drawO(uint8_t row, uint8_t column)
 // according to where the user touched the board.
 void ticTacToeDisplay_touchScreenComputeBoardRowColumn(uint8_t* row, uint8_t* column)
 {
-    utils_msDelay(50); //wait for touch to settle
+    //utils_msDelay(50); //wait for touch to settle
     display_clearOldTouchData();
     display_getTouchedPoint(&TTTD_touchCursorX, &TTTD_touchCursorY, &TTTD_touchPressure); //need to relay this info to the Cursors
-    printf("X:%d and Y:%d\n\r", TTTD_touchCursorX, TTTD_touchCursorY);
+    //printf("X:%d and Y:%d\n\r", TTTD_touchCursorX, TTTD_touchCursorY);
 
     //------------------------------------------------------------
     //COMPUTE COLUMN
     if (TTTD_touchCursorX < TTTD_VERTICAL_LINE_0) //IS IT IN COLUMN 0
     {
-        TTTD_currentColumn = TTTD_COLUMN_0;
+        *column = TTTD_COLUMN_0;
     }
 
     else if(TTTD_touchCursorX <= TTTD_VERTICAL_LINE_1) //is it in COLUMN 1
     {
-        TTTD_currentColumn = TTTD_COLUMN_1;
+        *column = TTTD_COLUMN_1;
     }
 
     else if(TTTD_touchCursorX >= TTTD_VERTICAL_LINE_1) //is it in COLUMN 2
     {
-        TTTD_currentColumn = TTTD_COLUMN_2;
+        *column = TTTD_COLUMN_2;
     }
     //------------------------------------------------------------
     //COMPUTE ROW
     if (TTTD_touchCursorY < TTTD_HORIZONTAL_LINE_0) //IS IT IN ROW 0
     {
-        TTTD_currentRow = TTTD_ROW_0;
+        *row = TTTD_ROW_0;
     }
 
     else if(TTTD_touchCursorY <= TTTD_HORIZONTAL_LINE_1) //is it in ROW 1
     {
-        TTTD_currentRow = TTTD_ROW_1;
+        *row = TTTD_ROW_1;
     }
 
     else if(TTTD_touchCursorY >= TTTD_HORIZONTAL_LINE_1) //is it in ROW 2
     {
-        TTTD_currentRow = TTTD_ROW_2;
+        *row = TTTD_ROW_2;
     }
-    printf("row:%d and column:%d\n\r", TTTD_currentRow, TTTD_currentColumn);
+    //printf("row:%d and column:%d\n\r", *row, *column);
 }
 
 // Runs a test of the display. Does the following.
@@ -203,4 +205,11 @@ void ticTacToeDisplay_runTest()
 }
 
 // This will draw the four board lines.
+
+
+
+
+
+
+
 
