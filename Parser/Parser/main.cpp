@@ -5,6 +5,7 @@
 
 #include "token.h"
 #include "Parser.h"
+#include "Database.h"
 
 using namespace std;
 
@@ -855,18 +856,31 @@ int main(int argc, char* argv[])
     //OUTPUT TO FILE:
 
     //Output(tokenList);
-
+	
 	try
 	{
+		//lab 2
 		Parser parse;
 		parse.parseDataLog(tokenList);
-		cout << parse.AllthatData.ToString();
+		//cout << parse.AllthatData.ToString();
+
+
+		//Lab 3
+		Database myDB;
+		myDB.DP = parse.AllthatData;
+
+		cout << myDB.printQueryResults;
 	}
 	catch (Token T)
 	{
 		cout << "Failure!" << endl;
 		cout << "  " << T.toString();
 	}
+
+
+
+
+
     return 0;
 }
 

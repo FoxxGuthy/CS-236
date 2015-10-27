@@ -118,11 +118,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Database.cpp" />
     <ClCompile Include="DatalogProgram.cpp" />
     <ClCompile Include="Fact.cpp" />
     <ClCompile Include="Parameter.cpp" />
     <ClCompile Include="Predicate.cpp" />
     <ClCompile Include="Query.cpp" />
+    <ClCompile Include="Relation.cpp" />
     <ClCompile Include="Rule.cpp" />
     <ClCompile Include="Scheme.cpp" />
     <ClCompile Include="main.cpp" />
@@ -130,15 +132,18 @@
     <ClCompile Include="token.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Database.h" />
     <ClInclude Include="DatalogProgram.h" />
     <ClInclude Include="Fact.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Predicate.h" />
     <ClInclude Include="Query.h" />
+    <ClInclude Include="Relation.h" />
     <ClInclude Include="Rule.h" />
     <ClInclude Include="Scheme.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="token.h" />
+    <ClInclude Include="Tuple.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="example1.txt" />
