@@ -1,6 +1,7 @@
 #pragma once
 #include "DatalogProgram.h"
 #include "Relation.h"
+#include <sstream>
 
 using namespace std;
 
@@ -12,12 +13,14 @@ public:
 
 	DatalogProgram DP;
 	vector<Relation> myRelations;
+	vector<Relation> toPrint;
 
 	void addRelation(Relation r);
 	void fillRelations();
 
 	void evalQueries();
 
-	string printQueryResults();
+	void printQueryResults(stringstream& out);
+	void printParams(vector<size_t>& varIndex, vector<string>& variablestoBePrinted, bool toAdd, size_t i, stringstream& out);
 };
 

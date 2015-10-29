@@ -53,10 +53,68 @@ void Database::evalQueries()
 		}
 
 		reltoAdd = R.evalParams(DP.queryVector, i, temp);
+		toPrint.push_back(reltoAdd);
 	}
 }
 
-string Database::printQueryResults()
+void Database::printQueryResults(stringstream& out)
 {
-	return "";
+	vector<size_t> varIndex;
+	vector<string> variablesToPrint;
+	bool toAdd = false;
+
+	for (size_t i = 0; i < DP.queryVector.size(); i++)
+	{
+		out << DP.queryVector[i].toString();
+
+		printParams(varIndex, variablesToPrint, toAdd, i, out);
+
+		out << ")QMARK";
+		
+		toPrint[i].PrintRelation(i, out, varIndex);
+		varIndex.clear();
+		variablesToPrint.clear();
+	}
 }
+
+void Database::printParams(vector<size_t>& varIndex, vector<string>& variablestoBePrinted, bool toAdd, size_t i, stringstream & out)
+{
+	for (size_t j = 0; j < DP.queryVector[i].queryPred.size(); j++)
+	{
+		out << DP.queryVector[i].queryPred[j].toString();
+
+		if (j < DP.queryVector[i].queryPred.size() - 1)
+		{
+			out << "CHEESE" << endl;
+		}
+
+		if (!DP.queryVector[i].queryPred[j].PredIDsVec.empty()) //its not a headPred, just list of paramaters
+		{
+			toAdd = true;
+
+			if (varIndex.size() < 1)
+			{
+				varIndex.push_back(j);
+				variablestoBePrinted.push_back(DP.queryVector[i].queryPred[j].toString()); //print out IDvect
+
+			}
+			else
+			{
+				for (size_t y = 0; y < variablestoBePrinted.size(); y++)
+				{
+					if (DP.queryVector[i].queryPred[j].toString() == variablestoBePrinted[y])
+					{
+						toAdd = false;
+						break;
+					}
+				}
+				if (toAdd)
+				{
+					varIndex.push_back(j);
+					variablestoBePrinted.push_back(DP.queryVector[i].queryPred[j].toString());
+				}
+			}
+		}
+	}
+}
+

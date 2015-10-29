@@ -869,7 +869,9 @@ int main(int argc, char* argv[])
 		Database myDB;
 		myDB.DP = parse.AllthatData;
 
-		cout << myDB.printQueryResults;
+		stringstream out;
+		myDB.printQueryResults(out);
+		cout << out.str(); 
 	}
 	catch (Token T)
 	{
