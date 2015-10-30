@@ -1,0 +1,47 @@
+#pragma once
+#include "PathfinderInterface.h"
+#include <time.h>
+#include <sstream>
+#include <fstream>
+
+int const ROWS = 5, COLS = 5, PAGE = 5;
+int const BEGIN = 0;
+int const END = 4;
+int const OPEN = 1;
+int const WALL = 0;
+int const VISITED = 2;
+
+class Pathfinder :
+	public PathfinderInterface
+{
+public:
+	Pathfinder();
+	~Pathfinder();
+
+	//Part 1------------------------------------------------------------------------------------------------------------
+	string getMaze();
+	void createRandomMaze();
+
+	//Part 2------------------------------------------------------------------------------------------------------------
+	bool importMaze(string file_name);
+
+	//Part 3------------------------------------------------------------------------------------------------------------
+	virtual vector<string> solveMaze();
+	bool findPath(int x, int y, int z);
+
+private:
+
+	/**
+	It is interesting to note, I cannot declare ROWS, COLS, and PAGE here. It wil not allow it. 
+			WHY??
+	*/
+	int inputTestMaze[ROWS][COLS][PAGE];
+	int validMaze[ROWS][COLS][PAGE];
+	vector <string> pathList;
+
+	bool importSucess = false;
+	bool randomMaze = false;
+
+	
+};
+
