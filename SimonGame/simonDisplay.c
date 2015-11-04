@@ -11,7 +11,7 @@
 #include "supportFiles/utils.h" // for testing purposes
 #include <stdio.h>
 
-#define INVALID_REGION_ERROR "INVALID REGION"
+#define INVALID_REGION_ERROR "INVALID REGION\n\r"
 
 #define TOUCH_PANEL_ANALOG_PROCESSING_DELAY_IN_MS 60 // in ms
 #define MAX_STR 255

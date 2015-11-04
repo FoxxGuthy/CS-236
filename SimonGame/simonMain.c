@@ -6,12 +6,13 @@
  */
 
 #include "SimonDisplay.h"
+#include "buttonHandler.h"
 #include "supportFiles/display.h"
 #include "supportFiles/utils.h" // for testing purposes
 
 int main()
 {
-    simonDisplay_runTest(5);
+    buttonHandler_runTest(5);
 }
 
 void isr_function()
