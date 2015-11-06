@@ -5,14 +5,16 @@
  *      Author: skguth10
  */
 
-#include "SimonDisplay.h"
+#include "simonDisplay.h"
 #include "buttonHandler.h"
+#include "flashSequence.h"
+#include "verifySequence.h"
 #include "supportFiles/display.h"
 #include "supportFiles/utils.h" // for testing purposes
 
 int main()
 {
-    buttonHandler_runTest(5);
+    verifySequence_runTest();
 }
 
 void isr_function()
