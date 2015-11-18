@@ -20,6 +20,7 @@
 // interface of the Simon game. The routine will continue to run until the touchCount has been reached, e.g.,
 // the user has touched the pad touchCount times.
 
+
 //for drawButton()
 #define BTN_X_POSITION 50 //this far from left edge, same amount on other side of BTN
 #define BTN_Y_POSITION 30 //this far from top edge
@@ -32,11 +33,14 @@
 #define SQUARE_X_OFFSET 160
 #define SQUARE_Y_OFFSET 120
 
+#define DISPLAY_RIGHT_SIDE 160
+#define DISPLAY_BOTTOM_SIDE 120
+
 int8_t simonDisplay_computeRegionNumber(int16_t x, int16_t y)
 {
-    if (x > 160) //right side of screen
+    if (x > DISPLAY_RIGHT_SIDE) //right side of screen
     {
-        if(y > 120) //lower half of screen
+        if(y > DISPLAY_BOTTOM_SIDE) //lower half of screen
         {
             return SIMON_DISPLAY_REGION_3; //bottom right = 3
         }
@@ -47,7 +51,7 @@ int8_t simonDisplay_computeRegionNumber(int16_t x, int16_t y)
     }
     else //left side of screen
     {
-        if(y > 120) //lower half of screen
+        if(y > DISPLAY_BOTTOM_SIDE) //lower half of screen
         {
             return SIMON_DISPLAY_REGION_2; //bottom left = 2
         }

@@ -15,7 +15,7 @@
 
 //SBH short for ButtonHandler.
 //The States
-enum BH_States {BH_init_st, BH_wait_touch, BH_touch_settle, BH_draw, BH_clear} BH_State;
+enum BH_States {BH_init_st, BH_wait_touch, BH_touch_settle, BH_draw, BH_clear} BH_State = BH_init_st;
 
 #define BH_ADTIMER_EXPIRE 1//(1/SIMONCONTROL_PERIOD 100e-3 //100 m/s/20) //the number of ticks required to allow the adTimer to reach 50ms
 static uint8_t BH_adTimer = 0; //counts up to 50ms.
@@ -31,6 +31,8 @@ static uint8_t BH_touchPressure = 0; //not actually used
 static uint8_t BH_regionNumber = 0; //whats the region boy
 
 bool wasReleasedFlag = false; //for use with detecting release
+
+#define BH_ERROR_MESSAGE "INVALID STATE\n\r"
 
 uint8_t buttonHandler_getRegionNumber()
 {
@@ -86,6 +88,9 @@ void BH_debugStatePrint() {
         case BH_clear:
             printf("BH_clear\n\r");
             break;
+        default:
+            printf(BH_ERROR_MESSAGE);
+            break;
         }
     }
 }
@@ -125,6 +130,9 @@ void buttonHandler_tick()
             simonDisplay_drawButton(BH_regionNumber);
             wasReleasedFlag = true; //set flag
             break;
+        default:
+            printf(BH_ERROR_MESSAGE);
+            break;
         }
 
         //TRANSITION STATE MACHINE
@@ -154,6 +162,9 @@ void buttonHandler_tick()
             break;
         case BH_clear:
             BH_State = BH_wait_touch;
+        default:
+            printf(BH_ERROR_MESSAGE);
+            break;
         }
     }
 }

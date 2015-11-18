@@ -16,7 +16,7 @@
 static bool verifySequenceEnable = false; //will it run? controlled by enable/disable
 
 //the States
-enum VS_States {VS_init_st, VS_enable_buttons_st, VS_wait_st, VS_verify_input_st, VS_complete_st} VS_State;
+enum VS_States {VS_init_st, VS_enable_buttons_st, VS_wait_st, VS_verify_input_st, VS_complete_st} VS_State = VS_init_st;
 
 //timer counter. if they don't pressed quickenough, she'll be wrong
 static uint16_t VS_touchCounter = 0;
@@ -26,6 +26,8 @@ static bool touchCountExpiredFlag = false; //did the wait expire?
 static bool inputErrorFlag = false; //did the user pressed the wrong thing?
 
 static uint16_t VS_index = 0; //this is where we arein the sequence
+
+#define VS_ERROR_MESSAGE "INVALID STATE\n\r"
 
 // State machine will run when enabled.
 void verifySequence_enable()
@@ -89,6 +91,9 @@ void VS_debugStatePrint() {
         case VS_complete_st:
             printf("VS_complete_st\n\r");
             break;
+        default:
+            break;
+            printf(VS_ERROR_MESSAGE);
         }
     }
 }
@@ -127,6 +132,9 @@ void verifySequence_tick()
             break;
         case VS_complete_st:
             // done. do nothing
+            break;
+        default:
+            printf(VS_ERROR_MESSAGE);
             break;
         }
 
@@ -172,6 +180,9 @@ void verifySequence_tick()
             break;
         case VS_complete_st:
             //do nothing. hang out.
+            break;
+        default:
+            printf(VS_ERROR_MESSAGE);
             break;
         }
     }

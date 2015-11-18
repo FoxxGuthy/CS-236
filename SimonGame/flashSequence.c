@@ -15,13 +15,15 @@
 static bool flashSequenceEnabled = false; //will it run, controlled by flashSequence_enable/disable
 
 //the states
-enum FS_States {FS_init_st, FS_draw_st, FS_wait_to_clear_st, FS_clear_st, FS_complete_st} FS_State;
+enum FS_States {FS_init_st, FS_draw_st, FS_wait_to_clear_st, FS_clear_st, FS_complete_st} FS_State = FS_init_st;
 
 //also doubles as index for sequence
 static uint16_t sequenceLengthCount = 0; //when we draw the sequence, will count how many times we're in draw/clear
 static uint8_t FS_regionNumber = 0; //current region
 static uint16_t waitTimer = 0; //timer for how long to hold the square until clearing
 #define WAITTIMER_EXPIRE 8 //how long to show square. tryying to be 500m/s
+
+#define FS_ERROR_MESSAGE "INVALID STATE\n\r"
 
 void flashSequence_enable()
 {
@@ -64,7 +66,10 @@ void flashSequence_tick()
             simonDisplay_drawSquare(FS_regionNumber, true);
             break;
         case FS_complete_st:
-
+            // do nothing
+            break;
+        default:
+            printf(FS_ERROR_MESSAGE);
             break;
         }
 
@@ -93,6 +98,9 @@ void flashSequence_tick()
             break;
         case FS_complete_st:
             //do nothing. FINAL STATE
+            break;
+        default:
+            printf(FS_ERROR_MESSAGE);
             break;
         }
     }

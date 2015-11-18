@@ -41,6 +41,8 @@ static uint16_t errorTimer = 0;
 #define SC_LVL_MESSAGE_EXPIRE 100 //give the users 10 seconds to start new lvl
 static uint16_t lvlMessageTimer = 0;
 
+#define SC_ERROR_MESSAGE "INVALID STATE \n\r"
+
 #define SC_HIGHSCORE_MESSAGE "Longest sequence: %d" //for displaying high schore
 
 enum SC_States {SC_init_st, SC_instructions_st, SC_get_sequence_st, SC_wait_first_touch_st, SC_flash_sequence_st,
@@ -86,6 +88,7 @@ enum SC_States {SC_init_st, SC_instructions_st, SC_get_sequence_st, SC_wait_firs
                 printf("SC_level_complete_st\n\r");
                 break;
             default:
+                printf(SC_ERROR_MESSAGE);
                 break;
             }
         }
@@ -137,17 +140,17 @@ enum SC_States {SC_init_st, SC_instructions_st, SC_get_sequence_st, SC_wait_firs
             break;
         case SC_error_st:
             errorTimer++;
-            if (verifySequence_isTimeOutError())
+            if (verifySequence_isTimeOutError()) // user didn't press
             {
                 display_setTextSize(SC_TEXTSIZE);
                 display_println(ERROR_MESSAGE_TIMEOUT);
             }
-            else if (verifySequence_isUserInputError())
+            else if (verifySequence_isUserInputError()) //pressed wrong input
             {
                 display_setTextSize(SC_TEXTSIZE);
                 display_println(ERROR_MESSAGE_INPUT);
             }
-            verifySequence_disable();
+            verifySequence_disable(); //set this here so we can read these flags. disable resets the error flags
             break;
         case SC_print_score_st:
             sprintf(maxScoreString, SC_HIGHSCORE_MESSAGE, SC_maxScore);
@@ -161,13 +164,14 @@ enum SC_States {SC_init_st, SC_instructions_st, SC_get_sequence_st, SC_wait_firs
             break;
         case SC_level_complete_st:
             lvlMessageTimer++;
-            if(printFlag)
+            if(printFlag) //set a flag so it doesn't keep being printed
             {
                 display_println(SC_LVL_MESSAGE);
-                printFlag = false;
+                printFlag = false; //switch flag
             }
             break;
         default:
+            printf(SC_ERROR_MESSAGE); //invalid state
             break;
         }
 
@@ -263,6 +267,7 @@ enum SC_States {SC_init_st, SC_instructions_st, SC_get_sequence_st, SC_wait_firs
             }
             break;
         default:
+            printf(SC_ERROR_MESSAGE);
             break;
         }
 
