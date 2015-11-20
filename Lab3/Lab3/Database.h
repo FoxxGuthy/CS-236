@@ -37,7 +37,7 @@ public:
 	void printParams(vector<size_t>&, vector<string>&, bool, size_t numOfStringsDetected, size_t, stringstream&);
 
 	//LAB 4
-	Relation Database::find(string& n);
+	Relation find(string& n);
 	int getTupleCount(); //used to find size of the schemes, if they've stopped growing, we can stop iterating
 	void useRules(vector<Rule>& rules); //begins process to use rules
 	void evalRules(vector<Rule> &rules); //loops thru rules, checking for tuples to add
