@@ -288,3 +288,165 @@ void Relation::printRelation(size_t i, stringstream& out, vector<size_t>& varInd
 		temp.printTuple(out, myAttributes, varIndex);
 	}
 }
+
+Relation Relation::project(vector<Parameter>& paramList)
+{
+	Relation r;
+	r.name = name;
+	r.scheme = scheme;
+	vector<int> myIndexList;
+
+	for (size_t i = 0; i < paramList.size(); i++)
+	{
+		for (size_t j = 0; j < scheme.myAttributes.size(); j++)
+		{
+			if (paramList[i].info == scheme.myAttributes[j])
+			{
+				myIndexList.push_back(j);
+			}
+		}
+	}
+
+	r = project(myIndexList);
+	return r;
+}
+
+Relation Relation::unionWith(Relation & toUnion)
+{
+	set<Tuple>::iterator it;
+
+	for (it = myTuples.begin(); it != myTuples.end(); it++)
+	{
+		Tuple temp;
+		temp = *it;
+
+		toUnion.myTuples.insert(temp);
+	}
+
+	return toUnion;
+}
+
+Relation Relation::join(Relation & one, Relation & two)
+{
+	Relation r;
+	Scheme s;
+	Tuple t;
+	set<Tuple>::iterator it;
+	set<Tuple>::iterator iter;
+
+	s = join(one.scheme, two.scheme);
+	r.scheme = s;
+
+	for (it = one.myTuples.begin(); it != one.myTuples.end(); it++)
+	{
+		Tuple t1 = *it;
+
+		for (iter = two.myTuples.begin(); iter != two.myTuples.end(); iter++)
+		{
+			Tuple t2 = *iter;
+
+			if (joinable(one.scheme, two.scheme, t1, t2) == true)
+			{
+				t = join(one.scheme, two.scheme, t1, t2);
+				r.myTuples.insert(t);
+			}
+		}
+	}
+
+	return r;
+}
+
+Scheme Relation::join(Scheme s1, Scheme s2)
+{
+	Scheme s;
+	bool toAdd;
+
+	for (size_t i = 0; i < s2.myAttributes.size(); i++)
+	{
+		toAdd = true;
+
+		for (size_t j = 0; j < s1.myAttributes.size(); j++)
+		{
+			if (s2.myAttributes.at(i) == s1.myAttributes.at(j))
+			{
+				toAdd = false;
+				break;
+			}
+		}
+		if (toAdd)
+		{
+			s1.myAttributes.push_back(s2.myAttributes.at(i));
+		}
+	}
+
+	return s1;
+}
+
+Tuple Relation::join(Scheme &s1, Scheme &s2, Tuple &t1, Tuple &t2)
+{
+	Tuple t;
+	bool toAdd;
+
+	for (size_t i = 0; i < t1.size(); i++)
+	{
+		t.push_back(t1.at(i));
+	}
+	for (size_t j = 0; j < t2.size(); j++)
+	{
+		toAdd = true;
+
+		for (size_t z = 0; z < s1.myAttributes.size(); z++)
+		{
+			if (s2.myAttributes.at(j) == s1.myAttributes.at(z))
+			{
+				toAdd = false;
+				break;
+			}
+		}
+		if (toAdd)
+		{
+			t.push_back(t2.at(j));
+		}
+	}
+	return t;
+}
+
+bool Relation::joinable(Scheme & s1, Scheme & s2, Tuple & t1, Tuple & t2)
+{
+	string name1, name2;
+	string v1, v2;
+
+	for (size_t i = 0; i < s1.myAttributes.size(); i++)
+	{
+		name1 = s1.myAttributes.at(i);
+		v1 = t1.at(i);
+
+		for (size_t j = 0; j < s2.myAttributes.size(); j++)
+		{
+			name2 = s2.myAttributes.at(j);
+			v2 = t2.at(j);
+
+			if (name1 == name2 && v1 != v2)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+int Relation::getNumTuples()
+{
+	int size = 0;
+	set<Tuple>::iterator it;
+
+	for (it = myTuples.begin(); it != myTuples.end(); it++)
+	{
+		Tuple temp;
+		temp = *it;
+
+		size += temp.size();
+	}
+
+	return size;
+}

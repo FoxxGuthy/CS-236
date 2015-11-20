@@ -401,3 +401,8 @@ vector<Predicate>& Parser::getQueries()
 {
 	return myQueries;
 }
+
+vector<Rule>& Parser::getRules()
+{
+	return myRules;
+}

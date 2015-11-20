@@ -50,5 +50,20 @@ public:
 
 	void printRelation(size_t, stringstream&, vector<size_t>&);
 
+	//Lab 4
+	Relation project(vector<Parameter>&);
+
+	Relation unionWith(Relation&);
+
+	Relation join(Relation&, Relation&);
+
+	Scheme join(Scheme, Scheme);
+
+	Tuple join(Scheme&, Scheme&, Tuple&, Tuple&);
+
+	bool joinable(Scheme&, Scheme&, Tuple&, Tuple&);
+
+	int getNumTuples();
+
 };
 

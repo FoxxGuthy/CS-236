@@ -38,9 +38,10 @@ int main(int argc, char* argv[])
 		vector<Predicate>& mySchemes = parser.getSchemes();
 		vector<Predicate>& myFacts = parser.getFacts();
 		vector<Predicate>& myQueries = parser.getQueries();
+		vector<Rule>& myRules = parser.getRules();
 
 		Database dbase;
-		dbase.fill(mySchemes,myFacts,myQueries);
+		dbase.fill(mySchemes,myFacts,myQueries, myRules);
 		dbase.printResults(out);
 		cout << out.str();
 
