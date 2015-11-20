@@ -46,7 +46,7 @@ void Database::fill(vector<Predicate>& s, vector<Predicate>& f, vector<Predicate
 		i++;
 	}
 
-
+	useRules(rules);
 
 	evalQueries(q, false);
 
