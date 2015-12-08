@@ -356,35 +356,35 @@ void Database::removeDupSchemes(Relation & r, vector<size_t>& removeIndex)
 
 void Database::createGraph(vector<Predicate>& myQueries, vector<Rule>& myRules)
 {
-	for (size_t i = 0; i < myQueries.size(); i++)
-	{
-		string currQ = myQueries.at(i).info;
-		Node n;
-		int curr = i;
-		//string key = "Q" + convertInt(curr);
-		set<string> currSet;
+	//for (size_t i = 0; i < myQueries.size(); i++)
+	//{
+	//	string currQ = myQueries.at(i).info;
+	//	Node n;
+	//	int curr = i;
+	//	//string key = "Q" + convertInt(curr);
+	//	set<string> currSet;
 
-		for (size_t j = 0; j < myRules.size(); j++)
-		{
-			string currR = myRules.at(j).myPred.info;
-			string key2;
-			int curr = j + 1;
+	//	for (size_t j = 0; j < myRules.size(); j++)
+	//	{
+	//		string currR = myRules.at(j).myPred.info;
+	//		string key2;
+	//		int curr = j;/* + 1;*/
 
-			if (currQ == currR)
-			{
-				key2 = "R" + convertInt(curr);
-				currSet.insert(key2);
-			}
-		}
-		n.adjacentNodes = currSet;
-		//myGraph[key] = n;
-	}
+	//		if (currQ == currR)
+	//		{
+	//			key2 = "R" + convertInt(curr);
+	//			currSet.insert(key2);
+	//		}
+	//	}
+	//	n.adjacentNodes = currSet;
+	//	//myGraph[key] = n;
+	//}
 
 	for (size_t i = 0; i < myRules.size(); i++)
 	{
 		string currR = myRules.at(i).myPred.info;
 		Node n;
-		int curr = i + 1;
+		int curr = i + 0;
 		string key = "R" + convertInt(curr);
 		set<string> currSet;
 
@@ -395,7 +395,7 @@ void Database::createGraph(vector<Predicate>& myQueries, vector<Rule>& myRules)
 
 			for (size_t j = 0; j < myRules.size(); j++)
 			{
-				int curr = j + 1;
+				int curr = j;/* + 1;*/
 				string ruleHead = myRules.at(j).myPred.info;
 
 				if (currPred == ruleHead)
@@ -415,22 +415,24 @@ void Database::printGraph(stringstream& out)
 {
 	map<string, Node>::iterator it;
 	set<string>::iterator iter;
+	set<string>::iterator tempIt;
 
 	out << "Dependency Graph" << endl;
 
 	for (it = myGraph.begin(); it != myGraph.end(); it++)
 	{
-		out << "  " << it->first << ":";
+		out << it->first << ":";
 
 		Node n = it->second;
 		set<string> curr = n.adjacentNodes;
 		for (iter = curr.begin(); iter != curr.end(); iter++)
 		{
 			string curr = *iter;
-			out << " " << curr;
+			out << curr << ",";
 		}
-		out << endl << endl;
+		out << endl;/* << endl;*/
 	}
+	out << endl;
 }
 
 void Database::printQuery(stringstream& out, vector<Predicate>& myQueries)
