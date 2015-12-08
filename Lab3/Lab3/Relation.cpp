@@ -64,6 +64,8 @@ Relation Relation::project(vector<int>& myIndicies) //reduce columns to those in
 	Tuple projected;
 	int toProject;
 
+	Scheme s;
+
 	for(it = myTuples.begin(); it != myTuples.end(); it++)
 	{
 		Tuple temp;
@@ -73,12 +75,15 @@ Relation Relation::project(vector<int>& myIndicies) //reduce columns to those in
 		{
 			toProject = myIndicies.at(i);
 			projected.push_back(temp.at(toProject));
+			//CHANGE MADE BELOW		
+			s.myAttributes.push_back(scheme.myAttributes.at(toProject));
 		}
 
 		r.myTuples.insert(projected);
 		projected.clear();
 	}
-
+	//change made below		
+	r.scheme = s;
 	return r;
 }
 
