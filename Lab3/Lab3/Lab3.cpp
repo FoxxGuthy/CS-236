@@ -18,13 +18,13 @@ int main(int argc, char* argv[])
 {
 	ifstream in;
 	stringstream out;
-	in.open (argv[1]);
+	in.open(argv[1]);
 
 
 	Scanner scanner;
 	scanner.scan(in);
 
-//for lab 2
+	//for lab 2
 
 	try
 	{
@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
 		parser.parse(myTokens);
 
-//for lab3
+		//for lab3
 
 		vector<Predicate>& mySchemes = parser.getSchemes();
 		vector<Predicate>& myFacts = parser.getFacts();
@@ -41,44 +41,52 @@ int main(int argc, char* argv[])
 		vector<Rule>& myRules = parser.getRules();
 
 		Database dbase;
-		dbase.fill(mySchemes,myFacts,myQueries, myRules);
+
+		//lab 5
+
+		dbase.createGraph(myQueries, myRules);
+		dbase.printGraph(out);
+		dbase.printQuery(out, myQueries);
+
+		//end of lab 5 additions
+		dbase.fill(mySchemes, myFacts, myQueries, myRules);
 		dbase.printResults(out);
 		cout << out.str();
 
 	}
 
-	catch(Token e)
+	catch (Token e)
 	{
 		out << "Failure!" << endl;
 		string myType;
 
-		switch(e.getType())
+		switch (e.getType())
 		{
-			case(0): myType = "COMMA";
+		case(0) : myType = "COMMA";
 			break;
-			case(1): myType = "PERIOD";
+		case(1) : myType = "PERIOD";
 			break;
-			case(2): myType = "Q_MARK";
+		case(2) : myType = "Q_MARK";
 			break;
-			case(3): myType = "LEFT_PAREN";
+		case(3) : myType = "LEFT_PAREN";
 			break;
-			case(4): myType = "RIGHT_PAREN";
+		case(4) : myType = "RIGHT_PAREN";
 			break;
-			case(5): myType = "COLON";
+		case(5) : myType = "COLON";
 			break;
-			case(6): myType = "COLON_DASH";
+		case(6) : myType = "COLON_DASH";
 			break;
-			case(7): myType = "SCHEMES";
+		case(7) : myType = "SCHEMES";
 			break;
-			case(8): myType = "FACTS";
+		case(8) : myType = "FACTS";
 			break;
-			case(9): myType = "RULES";
+		case(9) : myType = "RULES";
 			break;
-			case(10): myType = "QUERIES";
+		case(10) : myType = "QUERIES";
 			break;
-			case(11): myType = "ID";
+		case(11) : myType = "ID";
 			break;
-			case(12): myType = "STRING";
+		case(12) : myType = "STRING";
 			break;
 		}
 

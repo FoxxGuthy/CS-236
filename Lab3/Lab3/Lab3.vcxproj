@@ -120,6 +120,7 @@
   <ItemGroup>
     <ClInclude Include="Database.h" />
     <ClInclude Include="Fact.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Predicate.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="Fact.cpp" />
     <ClCompile Include="Lab3.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Parameter.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Predicate.cpp" />

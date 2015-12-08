@@ -26,8 +26,5 @@ string Parameter::toString()//stringstream & out)
 		sb << info;
 	}
 	return sb.str();
-
-	//cout << info << ",";
-
 }
 

@@ -94,8 +94,10 @@ void Database::printResults(stringstream& out)
 	bool toAdd = false;
 	size_t numOfStringsDetected = 0;
 
-	out << "Schemes populated after " << numPasses << " passes through the Rules." << endl;
+	//out << "Schemes populated after " << numPasses << " passes through the Rules." << endl;
+	out << "Rule Evaluation" << endl << numPasses << " passes: " << endl << endl;
 
+	out << "Query Evaluation" << endl;
 	for (size_t i = 0; i < myQueries.size(); i++)
 	{
 		out << myQueries.at(i).toString();
@@ -350,3 +352,277 @@ void Database::removeDupSchemes(Relation & r, vector<size_t>& removeIndex)
 	r.scheme = newScheme;
 }
 
+//lab 5
+
+void Database::createGraph(vector<Predicate>& myQueries, vector<Rule>& myRules)
+{
+	for (size_t i = 0; i < myQueries.size(); i++)
+	{
+		string currQ = myQueries.at(i).info;
+		Node n;
+		int curr = i;
+		//string key = "Q" + convertInt(curr);
+		set<string> currSet;
+
+		for (size_t j = 0; j < myRules.size(); j++)
+		{
+			string currR = myRules.at(j).myPred.info;
+			string key2;
+			int curr = j + 1;
+
+			if (currQ == currR)
+			{
+				key2 = "R" + convertInt(curr);
+				currSet.insert(key2);
+			}
+		}
+		n.adjacentNodes = currSet;
+		//myGraph[key] = n;
+	}
+
+	for (size_t i = 0; i < myRules.size(); i++)
+	{
+		string currR = myRules.at(i).myPred.info;
+		Node n;
+		int curr = i + 1;
+		string key = "R" + convertInt(curr);
+		set<string> currSet;
+
+		for (size_t z = 0; z < myRules.at(i).predList.size(); z++)
+		{
+			string currPred = myRules.at(i).predList.at(z).info;
+			string key2;
+
+			for (size_t j = 0; j < myRules.size(); j++)
+			{
+				int curr = j + 1;
+				string ruleHead = myRules.at(j).myPred.info;
+
+				if (currPred == ruleHead)
+				{
+					key2 = "R" + convertInt(curr);
+					currSet.insert(key2);
+				}
+			}
+		}
+
+		n.adjacentNodes = currSet;
+		myGraph[key] = n;
+	}
+}
+
+void Database::printGraph(stringstream& out)
+{
+	map<string, Node>::iterator it;
+	set<string>::iterator iter;
+
+	out << "Dependency Graph" << endl;
+
+	for (it = myGraph.begin(); it != myGraph.end(); it++)
+	{
+		out << "  " << it->first << ":";
+
+		Node n = it->second;
+		set<string> curr = n.adjacentNodes;
+		for (iter = curr.begin(); iter != curr.end(); iter++)
+		{
+			string curr = *iter;
+			out << " " << curr;
+		}
+		out << endl << endl;
+	}
+}
+
+void Database::printQuery(stringstream& out, vector<Predicate>& myQueries)
+{
+	//out << endl;
+	for (size_t i = 0; i < myQueries.size(); i++)
+	{
+		/*out << myQueries.at(i).toString();*/
+
+		//for (size_t j = 0; j < myQueries.at(i).paramList.size(); j++)
+		//{
+		//	out << myQueries.at(i).paramList.at(j).toString();
+
+		//	if (j < (myQueries.at(i).paramList.size() - 1))
+		//	{
+		//		out << ",";
+		//	}
+		//}
+		//out << ")? " << endl;
+		//out << endl;
+
+		string currQ = "Q" + convertInt(i + 1);
+		depthFirst(currQ);
+
+		//printPostNums(out);
+		printRuleOrder(out, currQ);
+		//printBackwardEdges(out);
+		reset();
+	}
+}
+
+void Database::depthFirst(string& currQ)
+{
+	set<string>::iterator iter;
+
+	Node q = myGraph[currQ];
+	set<string> currAdj = q.adjacentNodes;
+	myGraph[currQ].visited = true;
+
+	if (!currAdj.empty())
+	{
+		for (iter = currAdj.begin(); iter != currAdj.end(); iter++)
+		{
+			string dependsOn = *iter;
+			if (dependsOn != "" && myGraph[dependsOn].visited == false)
+			{
+				depthFirst(dependsOn);
+			}
+		}
+		myGraph[currQ].postOrder = postCntr;
+		postCntr++;
+	}
+	else
+	{
+		myGraph[currQ].postOrder = postCntr;
+		postCntr++;
+	}
+}
+
+void Database::printPostNums(stringstream& out)
+{
+	map<string, Node>::iterator it;
+
+	//out << "  Postorder Numbers" << endl;
+
+	for (it = myGraph.begin(); it != myGraph.end(); it++)
+	{
+		Node n = it->second;
+		if (n.postOrder != 3000000)
+		{
+			//out << "    " << it->first << ": " << n.postOrder << endl;
+		}
+	}
+
+	//out << endl;
+}
+
+void Database::printRuleOrder(stringstream& out, string currQ)
+{
+	map<string, Node>::iterator it;
+	int endCount = myGraph[currQ].postOrder;
+	int count = 1;
+
+	//out << "  Rule Evaluation Order" << endl;
+
+	while (count < endCount)
+	{
+		for (it = myGraph.begin(); it != myGraph.end(); it++)
+		{
+			string curr = it->first;
+			Node n = it->second;
+
+			if (curr[0] == 'Q')
+			{
+
+			}
+			else
+			{
+				if (n.postOrder == count)
+				{
+					out << "    " << curr << endl;
+					count++;
+				}
+			}
+		}
+	}
+
+	//out << endl;
+}
+
+//void Database::printBackwardEdges(stringstream& out)
+//{
+//	out << "  Backward Edges" << endl;
+//
+//	map<string, Node>::iterator it;
+//
+//	for (it = myGraph.begin(); it != myGraph.end(); it++)
+//	{
+//		string curr = it->first;
+//		Node n = it->second;
+//		int currPostOrder = n.postOrder;
+//
+//		if (curr[0] == 'R')
+//		{
+//			continuePrintingBackwardEdges(curr, n, currPostOrder, out);
+//		}
+//	}
+//
+//	out << endl;
+//}
+
+void Database::continuePrintingBackwardEdges(string& curr, Node& n, int& currPostOrder, stringstream& out) {
+	int counter = 1;
+	bool startedPrinting = false;
+	bool closedLine = false;
+	set<string>::iterator iter;
+
+	for (iter = n.adjacentNodes.begin(); iter != n.adjacentNodes.end(); iter++)
+	{
+		string adjacent = *iter;
+		if (myGraph[adjacent].postOrder != 3000000)
+		{
+			int adjPostOrder = myGraph[adjacent].postOrder;
+
+			if (currPostOrder <= adjPostOrder)
+			{
+				if (startedPrinting == false)
+				{
+					if (counter == n.adjacentNodes.size())
+					{
+						out << "    " << curr << ": " << adjacent << endl;
+						closedLine = true;
+						startedPrinting = true;
+					}
+					else
+					{
+						out << "    " << curr << ": " << adjacent;
+						closedLine = false;
+						startedPrinting = true;
+					}
+				}
+				else
+				{
+					out << " " << adjacent;
+				}
+			}
+		}
+		counter++;
+	}
+	if (startedPrinting == true && closedLine == false)
+	{
+		out << endl;
+	}
+}
+
+void Database::reset()
+{
+	map<string, Node>::iterator it;
+
+	for (it = myGraph.begin(); it != myGraph.end(); it++)
+	{
+		string curr = it->first;
+		myGraph[curr].postOrder = 3000000;
+		myGraph[curr].visited = false;
+	}
+
+	postCntr = 1;
+}
+
+string Database::convertInt(int number)
+{
+	stringstream ss;
+	ss << number;
+	return ss.str();
+}

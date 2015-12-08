@@ -1,9 +1,4 @@
-/*
- * Parameter.h
- *
- *  Created on: Sep 20, 2012
- *      Author: adamjc
- */
+
 #pragma once
 #include <iostream>
 #include <sstream>

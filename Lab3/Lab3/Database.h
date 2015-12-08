@@ -7,9 +7,11 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <map>
 #include "Relation.h"
 #include "Predicate.h"
 #include "Rule.h"
+#include "Node.h"
 
 using namespace std;
 
@@ -46,6 +48,22 @@ public:
 	void checkDuplicateSchemes(vector<Relation> & r);
 	bool contains(string& curr, vector<string>& currAttributes);
 	void removeDupSchemes(Relation& r, vector<size_t>& removeIndex);
+
+	//lab 5
+
+	map<string, Node> myGraph;
+	int postCntr;
+
+	void createGraph(vector<Predicate>&, vector<Rule>&);
+	void printGraph(stringstream&);
+	void printQuery(stringstream&, vector<Predicate>&);
+	void depthFirst(string&);//Node&);
+	void printPostNums(stringstream&);
+	void printRuleOrder(stringstream&, string);
+	//void printBackwardEdges(stringstream&);
+	void continuePrintingBackwardEdges(string&, Node&, int&, stringstream&);
+	void reset();
+	string convertInt(int);
 
 };
 
