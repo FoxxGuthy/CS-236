@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
 		dbase.createGraph(myQueries, myRules);
 		dbase.printGraph(out);
-		dbase.printQuery(out, myQueries);
+		//dbase.printQuery(out, myQueries);
 
 		//end of lab 5 additions
 		dbase.fill(mySchemes, myFacts, myQueries, myRules);

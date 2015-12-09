@@ -352,34 +352,10 @@ void Database::removeDupSchemes(Relation & r, vector<size_t>& removeIndex)
 	r.scheme = newScheme;
 }
 
-//lab 5
+//lab 5 
 
 void Database::createGraph(vector<Predicate>& myQueries, vector<Rule>& myRules)
 {
-	//for (size_t i = 0; i < myQueries.size(); i++)
-	//{
-	//	string currQ = myQueries.at(i).info;
-	//	Node n;
-	//	int curr = i;
-	//	//string key = "Q" + convertInt(curr);
-	//	set<string> currSet;
-
-	//	for (size_t j = 0; j < myRules.size(); j++)
-	//	{
-	//		string currR = myRules.at(j).myPred.info;
-	//		string key2;
-	//		int curr = j;/* + 1;*/
-
-	//		if (currQ == currR)
-	//		{
-	//			key2 = "R" + convertInt(curr);
-	//			currSet.insert(key2);
-	//		}
-	//	}
-	//	n.adjacentNodes = currSet;
-	//	//myGraph[key] = n;
-	//}
-
 	for (size_t i = 0; i < myRules.size(); i++)
 	{
 		string currR = myRules.at(i).myPred.info;
@@ -395,7 +371,7 @@ void Database::createGraph(vector<Predicate>& myQueries, vector<Rule>& myRules)
 
 			for (size_t j = 0; j < myRules.size(); j++)
 			{
-				int curr = j;/* + 1;*/
+				int curr = j;
 				string ruleHead = myRules.at(j).myPred.info;
 
 				if (currPred == ruleHead)
@@ -415,7 +391,7 @@ void Database::printGraph(stringstream& out)
 {
 	map<string, Node>::iterator it;
 	set<string>::iterator iter;
-	set<string>::iterator tempIt;
+	set<string>::iterator Last;
 
 	out << "Dependency Graph" << endl;
 
@@ -425,44 +401,53 @@ void Database::printGraph(stringstream& out)
 
 		Node n = it->second;
 		set<string> curr = n.adjacentNodes;
+		//if (curr.size() >= 2)
+		//{
+		//	Last = curr.end();
+		//	advance(Last, -1); //last item
+		//}
+
 		for (iter = curr.begin(); iter != curr.end(); iter++)
 		{
 			string curr = *iter;
-			out << curr << ",";
+			//if (iter != Last)
+			out << curr << ","; //got to lose this trailing comma
+			//else
+			//	out << curr;
 		}
-		out << endl;/* << endl;*/
+		out << endl;
 	}
 	out << endl;
 }
 
-void Database::printQuery(stringstream& out, vector<Predicate>& myQueries)
-{
-	//out << endl;
-	for (size_t i = 0; i < myQueries.size(); i++)
-	{
-		/*out << myQueries.at(i).toString();*/
-
-		//for (size_t j = 0; j < myQueries.at(i).paramList.size(); j++)
-		//{
-		//	out << myQueries.at(i).paramList.at(j).toString();
-
-		//	if (j < (myQueries.at(i).paramList.size() - 1))
-		//	{
-		//		out << ",";
-		//	}
-		//}
-		//out << ")? " << endl;
-		//out << endl;
-
-		string currQ = "Q" + convertInt(i + 1);
-		depthFirst(currQ);
-
-		//printPostNums(out);
-		printRuleOrder(out, currQ);
-		//printBackwardEdges(out);
-		reset();
-	}
-}
+//void Database::printQuery(stringstream& out, vector<Predicate>& myQueries)
+//{
+//	out << endl;
+//	for (size_t i = 0; i < myQueries.size(); i++)
+//	{
+//		out << myQueries.at(i).toString();
+//
+//		for (size_t j = 0; j < myQueries.at(i).paramList.size(); j++)
+//		{
+//			out << myQueries.at(i).paramList.at(j).toString();
+//
+//			if (j < (myQueries.at(i).paramList.size() - 1))
+//			{
+//				out << ",";
+//			}
+//		}
+//		out << ")? " << endl;
+//		out << endl;
+//
+//		string currQ = "Q" + convertInt(i + 1);
+//		depthFirst(currQ);
+//
+//		printPostNums(out);
+//		printRuleOrder(out, currQ);
+//		printBackwardEdges(out);
+//		reset();
+//	}
+//}
 
 void Database::depthFirst(string& currQ)
 {
@@ -492,56 +477,52 @@ void Database::depthFirst(string& currQ)
 	}
 }
 
-void Database::printPostNums(stringstream& out)
-{
-	map<string, Node>::iterator it;
+//void Database::printPostNums(stringstream& out)
+//{
+//	map<string, Node>::iterator it;
+//
+//	out << "  Postorder Numbers" << endl;
+//
+//	for (it = myGraph.begin(); it != myGraph.end(); it++)
+//	{
+//		Node n = it->second;
+//		if (n.postOrder != 3000000)
+//		{
+//			out << "    " << it->first << ": " << n.postOrder << endl;
+//		}
+//	}
+//
+//	out << endl;
+//}
 
-	//out << "  Postorder Numbers" << endl;
-
-	for (it = myGraph.begin(); it != myGraph.end(); it++)
-	{
-		Node n = it->second;
-		if (n.postOrder != 3000000)
-		{
-			//out << "    " << it->first << ": " << n.postOrder << endl;
-		}
-	}
-
-	//out << endl;
-}
-
-void Database::printRuleOrder(stringstream& out, string currQ)
-{
-	map<string, Node>::iterator it;
-	int endCount = myGraph[currQ].postOrder;
-	int count = 1;
-
-	//out << "  Rule Evaluation Order" << endl;
-
-	while (count < endCount)
-	{
-		for (it = myGraph.begin(); it != myGraph.end(); it++)
-		{
-			string curr = it->first;
-			Node n = it->second;
-
-			if (curr[0] == 'Q')
-			{
-
-			}
-			else
-			{
-				if (n.postOrder == count)
-				{
-					out << "    " << curr << endl;
-					count++;
-				}
-			}
-		}
-	}
-
-	//out << endl;
-}
+//void Database::printRuleOrder(stringstream& out, string currQ)
+//{
+//	map<string, Node>::iterator it;
+//	int endCount = myGraph[currQ].postOrder;
+//	int count = 1;
+//
+//	while (count < endCount)
+//	{
+//		for (it = myGraph.begin(); it != myGraph.end(); it++)
+//		{
+//			string curr = it->first;
+//			Node n = it->second;
+//
+//			if (curr[0] == 'Q')
+//			{
+//
+//			}
+//			else
+//			{
+//				if (n.postOrder == count)
+//				{
+//					out << "    " << curr << endl;
+//					count++;
+//				}
+//			}
+//		}
+//	}
+//}
 
 //void Database::printBackwardEdges(stringstream& out)
 //{
@@ -564,49 +545,49 @@ void Database::printRuleOrder(stringstream& out, string currQ)
 //	out << endl;
 //}
 
-void Database::continuePrintingBackwardEdges(string& curr, Node& n, int& currPostOrder, stringstream& out) {
-	int counter = 1;
-	bool startedPrinting = false;
-	bool closedLine = false;
-	set<string>::iterator iter;
-
-	for (iter = n.adjacentNodes.begin(); iter != n.adjacentNodes.end(); iter++)
-	{
-		string adjacent = *iter;
-		if (myGraph[adjacent].postOrder != 3000000)
-		{
-			int adjPostOrder = myGraph[adjacent].postOrder;
-
-			if (currPostOrder <= adjPostOrder)
-			{
-				if (startedPrinting == false)
-				{
-					if (counter == n.adjacentNodes.size())
-					{
-						out << "    " << curr << ": " << adjacent << endl;
-						closedLine = true;
-						startedPrinting = true;
-					}
-					else
-					{
-						out << "    " << curr << ": " << adjacent;
-						closedLine = false;
-						startedPrinting = true;
-					}
-				}
-				else
-				{
-					out << " " << adjacent;
-				}
-			}
-		}
-		counter++;
-	}
-	if (startedPrinting == true && closedLine == false)
-	{
-		out << endl;
-	}
-}
+//void Database::continuePrintingBackwardEdges(string& curr, Node& n, int& currPostOrder, stringstream& out) {
+//	int counter = 1;
+//	bool startedPrinting = false;
+//	bool closedLine = false;
+//	set<string>::iterator iter;
+//
+//	for (iter = n.adjacentNodes.begin(); iter != n.adjacentNodes.end(); iter++)
+//	{
+//		string adjacent = *iter;
+//		if (myGraph[adjacent].postOrder != 3000000)
+//		{
+//			int adjPostOrder = myGraph[adjacent].postOrder;
+//
+//			if (currPostOrder <= adjPostOrder)
+//			{
+//				if (startedPrinting == false)
+//				{
+//					if (counter == n.adjacentNodes.size())
+//					{
+//						out << "    " << curr << ": " << adjacent << endl;
+//						closedLine = true;
+//						startedPrinting = true;
+//					}
+//					else
+//					{
+//						out << "    " << curr << ": " << adjacent;
+//						closedLine = false;
+//						startedPrinting = true;
+//					}
+//				}
+//				else
+//				{
+//					out << " " << adjacent;
+//				}
+//			}
+//		}
+//		counter++;
+//	}
+//	if (startedPrinting == true && closedLine == false)
+//	{
+//		out << endl;
+//	}
+//}
 
 void Database::reset()
 {

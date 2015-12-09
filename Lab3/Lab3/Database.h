@@ -56,12 +56,12 @@ public:
 
 	void createGraph(vector<Predicate>&, vector<Rule>&);
 	void printGraph(stringstream&);
-	void printQuery(stringstream&, vector<Predicate>&);
-	void depthFirst(string&);//Node&);
-	void printPostNums(stringstream&);
-	void printRuleOrder(stringstream&, string);
+	//void printQuery(stringstream&, vector<Predicate>&);
+	void depthFirst(string&);
+	//void printPostNums(stringstream&);
+	//void printRuleOrder(stringstream&, string);
 	//void printBackwardEdges(stringstream&);
-	void continuePrintingBackwardEdges(string&, Node&, int&, stringstream&);
+	//void continuePrintingBackwardEdges(string&, Node&, int&, stringstream&);
 	void reset();
 	string convertInt(int);
 
