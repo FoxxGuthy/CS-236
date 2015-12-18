@@ -32,5 +32,8 @@ void ticTacToeDisplay_runTest();
 // This will draw the four board lines.
 void ticTacToeDisplay_drawBoardLines();
 
+//draw lines and clears screen
+void ticTacToeDisplay_reset();
+
 
 #endif /* TICTACTOEDISPLAY_H_ */

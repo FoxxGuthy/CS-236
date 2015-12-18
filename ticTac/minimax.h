@@ -9,6 +9,7 @@
 #define MINIMAX_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // Defines the boundaries of the tic-tac-toe board.
 #define MINIMAX_BOARD_ROWS 3
